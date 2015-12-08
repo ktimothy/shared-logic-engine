@@ -1,5 +1,5 @@
 -cp src-shim
--cp src-core
+-cp src-logic
 -cp tests
 -js out/tests.js
 -main TestsMain
@@ -8,7 +8,7 @@
 --next
 
 -cp src-shim
--cp src-core
+-cp src-logic
 -cp tests
 -swf out/tests.swf
 -main TestsMain
