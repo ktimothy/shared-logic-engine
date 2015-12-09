@@ -1,3 +1,4 @@
+# js logic
 -cp ../src-shim
 -cp ../src-logic
 -cp src-dummy-models
@@ -9,12 +10,39 @@
 
 --next
 
+# js client
+-cp ../src-shim
+-cp ../src-client
+-cp src-dummy-models
+-cp src-tests-client
+-js out/tests-client.js
+-main TestsMain
+-D tests
+
+--next
+
+# swf logic
 -cp ../src-shim
 -cp ../src-logic
 -cp src-dummy-models
 -cp src-dummy-logic
 -cp src-tests-logic
 -swf out/tests-logic.swf
+-main TestsMain
+--flash-strict
+-debug
+-D fdb
+-D native-trace
+-D tests
+
+--next
+
+# swf client
+-cp ../src-shim
+-cp ../src-client
+-cp src-dummy-models
+-cp src-tests-client
+-swf out/tests-client.swf
 -main TestsMain
 --flash-strict
 -debug

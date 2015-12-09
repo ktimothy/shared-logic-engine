@@ -18,6 +18,11 @@ class TestDump extends Value
     public var bare_map:ValueMap<String>;
     public var complex_map:ValueMap<XObject>;
 
+    // Works ok for client, breaks the compiler for logic
+    //
+    // public var nested_simple_map:ValueMap<ValueMap<String>>;
+    // public var nested_complex_map:ValueMap<ValueMap<XObject>>;
+
     public var coords:Coords;
     public var inner:InnerModel;
 
