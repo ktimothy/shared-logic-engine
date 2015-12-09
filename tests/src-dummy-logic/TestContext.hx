@@ -1,14 +1,14 @@
-package test_context;
+package ;
 
 import sle.shim.IContext;
 import sle.shim.IEnvironment;
 
 import sle.core.ContextBase;
 
-import test_commands.ExternalCommand;
-import test_queries.ExternalQuery;
-import test_queries.WritingQuery;
-import test_models.TestDump;
+import commands.ExternalCommand;
+import queries.ExternalQuery;
+import queries.WritingQuery;
+import models.TestDump;
 
 class TestContext extends ContextBase<TestDump> implements IContext
 {

@@ -1,0 +1,23 @@
+-cp ../src-shim
+-cp ../src-logic
+-cp src-dummy-models
+-cp src-dummy-logic
+-cp src-tests-logic
+-js out/tests-logic.js
+-main TestsMain
+-D tests
+
+--next
+
+-cp ../src-shim
+-cp ../src-logic
+-cp src-dummy-models
+-cp src-dummy-logic
+-cp src-tests-logic
+-swf out/tests-logic.swf
+-main TestsMain
+--flash-strict
+-debug
+-D fdb
+-D native-trace
+-D tests

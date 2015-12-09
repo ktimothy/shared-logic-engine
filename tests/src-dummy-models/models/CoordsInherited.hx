@@ -1,4 +1,4 @@
-package test_models;
+package models;
 
 class CoordsInherited extends Coords
 {

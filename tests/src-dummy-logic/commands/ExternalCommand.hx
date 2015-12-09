@@ -1,8 +1,8 @@
-package test_commands;
+package commands;
 
 import sle.core.Const;
 import sle.core.commands.CommandBase;
-import test_models.TestDump;
+import models.TestDump;
 
 class ExternalCommand extends CommandBase<TestDump>
 {

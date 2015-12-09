@@ -1,7 +1,7 @@
-package test_commands;
+package commands;
 
-import test_queries.SimpleQuery;
-import test_models.TestDump;
+import queries.SimpleQuery;
+import models.TestDump;
 import sle.core.commands.CommandBase;
 
 
