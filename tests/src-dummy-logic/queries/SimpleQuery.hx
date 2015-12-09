@@ -1,6 +1,6 @@
-package test_queries;
+package queries;
 
-import test_models.TestDump;
+import models.TestDump;
 import sle.core.queries.QueryBase;
 
 class SimpleQuery extends QueryBase<TestDump>

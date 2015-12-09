@@ -1,6 +1,5 @@
 package ;
 
-import test_context.TestContext;
 import haxe.unit.TestCase;
 
 class ContextTest extends TestCase

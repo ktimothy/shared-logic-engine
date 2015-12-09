@@ -1,10 +1,10 @@
 package ;
 
-import test_queries.WritingQuery;
-import test_queries.ExternalQuery;
-import test_queries.SimpleQuery;
+import queries.WritingQuery;
+import queries.ExternalQuery;
+import queries.SimpleQuery;
 import sle.core.queries.Queries;
-import test_models.TestDump;
+import models.TestDump;
 import haxe.unit.TestCase;
 import sle.core.Error;
 

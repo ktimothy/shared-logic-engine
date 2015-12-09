@@ -3,10 +3,10 @@ package ;
 import sle.core.models.collections.ValueMap;
 import sle.core.actions.ActionLog;
 import TestUtils;
-import test_models.InnerObject;
-import test_models.Coords;
-import test_models.InnerModel;
-import test_models.TestDump;
+import models.InnerObject;
+import models.Coords;
+import models.InnerModel;
+import models.TestDump;
 import haxe.unit.TestCase;
 import sle.core.Utils;
 

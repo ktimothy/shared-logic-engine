@@ -1,4 +1,4 @@
-package test_models;
+package models;
 
 import sle.core.models.Value;
 class XObject extends Value

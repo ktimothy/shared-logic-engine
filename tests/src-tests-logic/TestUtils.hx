@@ -5,7 +5,7 @@ class TestUtils
     public static function getTestDump():Dynamic
     {
         return {
-            __type: 'test_models.TestDump',
+            __type: 'models.TestDump',
 
             // bare values
             integer: 87,
@@ -33,7 +33,7 @@ class TestUtils
 
             // inheritance with __type usage
             coordsInherited: {
-                __type: 'test_models.CoordsInherited',
+                __type: 'models.CoordsInherited',
                 x: 1,
                 y: 2,
                 z: 3

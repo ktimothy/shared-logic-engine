@@ -1,9 +1,9 @@
-package test_context;
+package ;
 
 import sle.core.Const;
 import sle.core.CommandParamsBase;
-import test_models.InnerModel;
-import test_models.TestDump;
+import models.InnerModel;
+import models.TestDump;
 import sle.core.models.collections.ValueArray;
 import sle.core.ContextBase;
 import sle.core.queries.QueryBase;

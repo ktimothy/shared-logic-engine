@@ -8,11 +8,11 @@ import sle.shim.ActionDump;
 import sle.core.Utils;
 import sle.core.actions.ActionLog;
 
-import test_models.XObject;
-import test_models.InnerModel;
-import test_models.Coords;
-import test_models.InnerObject;
-import test_models.TestDump;
+import models.XObject;
+import models.InnerModel;
+import models.Coords;
+import models.InnerObject;
+import models.TestDump;
 
 
 

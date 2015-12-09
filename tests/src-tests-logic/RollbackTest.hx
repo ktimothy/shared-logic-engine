@@ -1,11 +1,11 @@
 package ;
 
 import sle.core.models.ValueBase;
-import test_models.Coords;
-import test_models.InnerModel;
+import models.Coords;
+import models.InnerModel;
 import sle.core.actions.ActionLog;
 import TestUtils;
-import test_models.TestDump;
+import models.TestDump;
 import haxe.unit.TestCase;
 import sle.core.Utils;
 

@@ -1,10 +1,10 @@
 package ;
 
-import test_commands.ExternalCommand;
-import test_commands.TestCommand;
+import commands.ExternalCommand;
+import commands.TestCommand;
 import sle.core.commands.Commands;
 import sle.core.queries.Queries;
-import test_models.TestDump;
+import models.TestDump;
 import haxe.unit.TestCase;
 
 class CommandsTest extends TestCase

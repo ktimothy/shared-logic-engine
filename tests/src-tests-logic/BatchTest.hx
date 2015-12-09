@@ -4,8 +4,6 @@ import haxe.unit.TestCase;
 
 import sle.shim.ActionDump;
 
-import test_context.DemoContext;
-
 class BatchTest extends TestCase
 {
     private var dump:Dynamic;
