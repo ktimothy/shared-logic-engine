@@ -16,7 +16,7 @@ class TestsMain
 
         var r = new haxe.unit.TestRunner();
 
-        r.add(new TestDumpFieldsTest());
+        r.add(new ValueTest());
         
         r.run();
     }
