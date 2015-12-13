@@ -1,11 +1,13 @@
 package sle.core.models;
 
-@:autoBuild(sle.core.macro.ValueMacro.build())
-class Value
-{
-    public function new(){}
+import sle.core.models.collections.ComplexValueMapBase;
 
-    public function process(action:sle.shim.ActionDump):Void
+@:autoBuild(sle.core.macro.ValueMacro.build())
+class Value extends ValueBase
+{
+    public function new() super();
+
+    override public function process(action:sle.shim.ActionDump):Void
     {
         throw new Error('This model has no field "${action.path[0]}"');
     }
