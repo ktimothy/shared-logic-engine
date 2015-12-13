@@ -1,5 +1,10 @@
 package sle.core.models.collections;
 
+@:dce
+@:genericBuild(sle.core.macro.ValueMapMacro.build())
+class ValueMap<T> {}
+
+/*
 @:forward(exists, remove, iterator, keys)
 abstract ValueMap<T>(ValueMapBase<T>)
 {
@@ -20,3 +25,4 @@ abstract ValueMap<T>(ValueMapBase<T>)
         throw new Error('Not allowed');
     }
 }
+*/

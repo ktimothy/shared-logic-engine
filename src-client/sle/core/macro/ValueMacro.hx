@@ -8,13 +8,14 @@ import haxe.macro.Expr.Field;
 import haxe.macro.TypeTools;
 import haxe.macro.ComplexTypeTools;
 import haxe.macro.PositionTools;
+import haxe.macro.Type;
 
 @:dce
 class ValueMacro
 {
     public static function build():Array<Field>
     {
-        // trace('Building class: ${Context.getLocalClass()}');
+        // trace('AutoBuild on ${Context.getLocalClass()}');
 
         var newFields       :Array<Field> = [];
         var bindableProps   :Array<Field> = [];
@@ -153,7 +154,8 @@ class ValueMacro
                 Context.fatalError('Expected FProp, got: ${prop.kind}', prop.pos);
         }
 
-        var tPath = switch(propertyType){
+        var tPath = switch(propertyType)
+        {
             case TPath(p):
                 p;
 
@@ -175,8 +177,29 @@ class ValueMacro
 
                 if(isValueMap(instanceType.get()))
                 {
-                    Context.warning('ValueMap is not supported yet, property "${prop.name}" will not recieve changes', prop.pos);
-                    macro trace(${haxe.macro.MacroStringTools.formatString('Ignoring changes for field "${prop.name}" (not implemented yet)', prop.pos)});
+                    macro if(action.path.length == 1)
+                    {
+                        $i{prop.name} = Reflect.hasField(action.newValue, '__type')
+                            ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
+                            : new $tPath();
+
+                        for(fieldName in Reflect.fields(action.newValue))
+                        {
+                            if(fieldName == '__type')
+                                continue;
+
+                            $i{prop.name}.process({
+                                opName:     'var',
+                                path:       [fieldName],
+                                newValue:   Reflect.field(action.newValue, fieldName)
+                            });
+                        }
+                    }
+                    else
+                    {
+                        action.path.shift();
+                        $i{prop.name}.process(action);
+                    }
                 }
                 else
                     Context.fatalError('Property ${prop.name} is not of any supported types', prop.pos);
@@ -221,10 +244,13 @@ class ValueMacro
         }
     }
 
-    // not sure if it works correctly
     private static function isValueMap(type:haxe.macro.Type.AbstractType):Bool
     {
-        if(type.name == 'ValueMap' && type.pack.length == 4 && type.pack[0] == 'sle' && type.pack[1] == 'core' && type.pack[2] == 'models' && type.pack[3] == 'collections')
+        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'SimpleValueMap')
+            return true;
+
+        // zalipuha!
+        if(type.pack.join('.') == 'sle.core.models.collections' && ~/^ComplexValueMap_.+/.match(type.name))
             return true;
 
         return false;

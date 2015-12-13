@@ -135,4 +135,64 @@ class ValueTest extends TestCase
 
         assertEquals(2.0, cast(model.coordsInherited, CoordsInherited).z);
     }
+
+    public function testSimpleMapIsProcessedProperly()
+    {
+        var model = new TestDump();
+
+        var action1:ActionDump = {
+            opName:     'var',
+            path:       ['bare_map'],
+            newValue:   {test_property: 'test_value'}
+        }
+
+        model.process(action1);
+
+        assertEquals('test_value', model.bare_map['test_property']);
+
+        var action2:ActionDump = {
+            opName:     'var',
+            path:       ['bare_map', 'test_property'],
+            newValue:   'test_value_2'
+        }
+
+        model.process(action2);
+
+        assertEquals('test_value_2', model.bare_map['test_property']);
+    }
+
+    public function testComplexMapIsProcessedProperly()
+    {
+        var model = new TestDump();
+
+        var action1:ActionDump = {
+            opName:     'var',
+            path:       ['complex_map'],
+            newValue:   {test_property: {x: true}}
+        }
+
+        model.process(action1);
+
+        assertEquals(true, model.complex_map['test_property'].x);
+
+        var action2:ActionDump = {
+            opName:     'var',
+            path:       ['complex_map', 'test_property'],
+            newValue:   {x: false}
+        }
+
+        model.process(action2);
+
+        assertEquals(false, model.complex_map['test_property'].x);
+
+        var action3:ActionDump = {
+            opName:     'var',
+            path:       ['complex_map', 'test_property', 'x'],
+            newValue:   true
+        }
+
+        model.process(action3);
+
+        assertEquals(true, model.complex_map['test_property'].x);
+    }
 }
