@@ -195,4 +195,98 @@ class ValueTest extends TestCase
 
         assertEquals(true, model.complex_map['test_property'].x);
     }
+
+    public function testNestedSimpleMapIsProcessedProperly()
+    {
+        var model = new TestDump();
+
+        var action1:ActionDump = {
+            opName:     'var',
+            path:       ['nested_simple_map'],
+            newValue:   {foo: {bar: 'test1'}}
+        }
+
+        model.process(action1);
+
+        assertTrue(model.nested_simple_map.exists('foo'));
+        assertTrue(model.nested_simple_map['foo'].exists('bar'));
+        assertEquals('test1', model.nested_simple_map['foo']['bar']);
+
+        var action2:ActionDump = {
+            opName:     'var',
+            path:       ['nested_simple_map', 'foo'],
+            newValue:   {baz: 'test2'}
+        }
+
+        model.process(action2);
+
+        assertTrue(model.nested_simple_map.exists('foo'));
+        assertTrue(model.nested_simple_map['foo'].exists('baz'));
+        assertEquals('test2', model.nested_simple_map['foo']['baz']);
+
+        var action3:ActionDump = {
+            opName:     'var',
+            path:       ['nested_simple_map', 'foo', 'baz'],
+            newValue:   'test3'
+        }
+
+        model.process(action3);
+
+        assertTrue(model.nested_simple_map.exists('foo'));
+        assertTrue(model.nested_simple_map['foo'].exists('baz'));
+        assertEquals('test3', model.nested_simple_map['foo']['baz']);
+    }
+
+    public function testNestedComplexMapIsProcessedProperly()
+    {
+        var model = new TestDump();
+
+        var action1:ActionDump = {
+            opName:     'var',
+            path:       ['nested_complex_map'],
+            newValue:   {foo: {bar: {x: true}}}
+        }
+
+        model.process(action1);
+
+        assertTrue(model.nested_complex_map.exists('foo'));
+        assertTrue(model.nested_complex_map['foo'].exists('bar'));
+        assertEquals(true, model.nested_complex_map['foo']['bar'].x);
+
+        var action2:ActionDump = {
+            opName:     'var',
+            path:       ['nested_complex_map', 'foo'],
+            newValue:   {baz: {x: false}}
+        }
+
+        model.process(action2);
+
+        assertTrue(model.nested_complex_map.exists('foo'));
+        assertTrue(model.nested_complex_map['foo'].exists('baz'));
+        assertEquals(false, model.nested_complex_map['foo']['baz'].x);
+
+        var action3:ActionDump = {
+            opName:     'var',
+            path:       ['nested_complex_map', 'foo', 'baz'],
+            newValue:   {x: true}
+        }
+
+        model.process(action3);
+
+        assertTrue(model.nested_complex_map.exists('foo'));
+        assertTrue(model.nested_complex_map['foo'].exists('baz'));
+        assertEquals(true, model.nested_complex_map['foo']['baz'].x);
+
+        var action4:ActionDump = {
+            opName:     'var',
+            path:       ['nested_complex_map', 'foo', 'baz', 'x'],
+            newValue:   false
+        }
+
+        model.process(action4);
+
+        assertTrue(model.nested_complex_map.exists('foo'));
+        assertTrue(model.nested_complex_map['foo'].exists('baz'));
+        assertEquals(false, model.nested_complex_map['foo']['baz'].x);
+    }
 }

@@ -1,5 +1,7 @@
 package sle.core.models;
 
+import sle.core.models.collections.ComplexValueMapBase;
+
 @:autoBuild(sle.core.macro.ValueMacro.build())
 class Value extends ValueBase
 {

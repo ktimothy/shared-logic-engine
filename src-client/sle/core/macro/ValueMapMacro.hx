@@ -2,8 +2,10 @@ package sle.core.macro;
 
 #if macro
 
+import haxe.ds.StringMap;
 import haxe.macro.Context;
 import haxe.macro.PositionTools;
+import haxe.macro.ComplexTypeTools;
 import haxe.macro.TypeTools;
 import haxe.macro.Type;
 import haxe.macro.Expr.Access;
@@ -14,122 +16,65 @@ import haxe.macro.Expr.FieldType;
 import haxe.macro.Expr.TypeParam;
 import haxe.macro.Expr.ExprDef;
 import haxe.macro.Expr.Constant;
+using StringTools;
 
 class ValueMapMacro
 {
-    public static function build():Type
+    private static var _typeCache = new StringMap<Bool>();
+
+    public static function build():ComplexType
     {
         var localType = Context.getLocalType();
-
-        // trace('');
-        // trace('GenericBuild on ${localType}');
 
         return switch(localType)
         {
             case TInst(_.get() => classType, [elementType]):
 
-                // trace('Element type is $elementType');
-
                 if(!isValueMap(classType))
                     Context.fatalError('ValueMapMacro.build() can be called only on ValueMap<T>!', PositionTools.here());
 
-                if(isSimpleType(elementType))
-                {
-                    // trace('Element type is simple, going with SimpleValueMap');
+                var name = getAbstractNameForElementType(elementType);
 
-                    var targetType = Context.getType('sle.core.models.collections.SimpleValueMap');
+                if(!_typeCache.exists(name))
+                    defineAbstractForType(elementType);
 
-                    // trace('Got type: $targetType');
+                return TPath({pack: ['sle', 'core', 'models', 'collections'], name: name});
 
-                    // trace('Returning type: $targetType');
-                    // trace('');
-
-                    targetType;
-                    
-                }
-                else
-                {
-                    // trace('Element type is complex, going with ComplexValueMap');
-
-                    switch(elementType)
-                    {
-                        case TInst(_.get() => elementClassType, elementTypeParams):
-
-                            // trace('Element class package: ${elementClassType.pack}');
-                            // trace('Element class name: ${elementClassType.name}');
-                            // trace('Element type params: $elementTypeParams');
-
-                            var targetAbstractName = 'ComplexValueMap_${elementClassType.pack.join('_')}_${elementClassType.name}';
-                            var targetAbstractPackage = ['sle', 'core', 'models', 'collections'];
-
-                            // trace('Target abstract name: $targetAbstractName');
-                            // trace('Target abstract package: $targetAbstractPackage');
-
-                            var targetAbstractPath = '${targetAbstractPackage.join('.')}.$targetAbstractName';
-
-                            // trace('Setting onTypeNotFound handler');
-
-                            Context.onTypeNotFound(typeNotFoundHandler);
-
-                            // trace('Requesting type by path "$targetAbstractPath"');
-
-                            var targetAbstract = Context.getType(targetAbstractPath);
-
-                            // trace('Got type: $targetAbstract');
-                            // trace('');
-
-                            targetAbstract;
-
-
-                        default:
-                            Context.fatalError('Generation of ValueMap<T> for complex element types is implemented for TInst only, got $elementType', PositionTools.here());
-                    }
-                }
+                // isSimpleType(elementType)
+                //     ? macro : sle.core.models.collections.SimpleValueMap<$ctElementType>
+                //     : macro : sle.core.models.collections.ComplexValueMap<$ctElementType>;
 
             default:
                 Context.fatalError('ValueMapMacro.build() expected sle.core.models.collections.ValueMap<T>, got $localType', PositionTools.here());
         }
     }
 
-    private static function typeNotFoundHandler(requestedTypePath:String):TypeDefinition
+    private static function defineAbstractForType(elementType:Type):Void
     {
-        var splitRequestedTypePath = requestedTypePath.split('.');
+        var name = getAbstractNameForElementType(elementType);
 
-        var requestedTypePackage = splitRequestedTypePath.slice(0, -1);
-        var requestedTypeName = splitRequestedTypePath[splitRequestedTypePath.length - 1];
+        var ct = TypeTools.toComplexType(elementType);
 
-        if(requestedTypePackage.join('.') != 'sle.core.models.collections')
-            return null;
+        var tpath = switch(ct)
+        {
+            case TPath(tp):
+                tp;
 
-        var splitRequestedTypeName = requestedTypeName.split('_');
+            default:
+                Context.fatalError('Expected TPath, got $ct', PositionTools.here());         
+        }
 
-        if(splitRequestedTypeName[0] != 'ComplexValueMap')
-            return null;
+        var kind:sle.core.models.collections.ValueMapImpl.ValueMapKind = isSimpleType(elementType)
+            ? Simple
+            : Complex;
 
-        var splitElementTypePath = splitRequestedTypeName.slice(1, splitRequestedTypeName.length);
+        var factory = macro function() return new $tpath();
 
-        var elementTypePackage = splitElementTypePath.slice(0, -1);
-        var elementTypeName = splitElementTypePath[splitElementTypePath.length - 1];
-
-        var innerType = TPath({
-            pack: ['sle', 'core', 'models', 'collections'],
-            name: 'ComplexValueMapBase',
-            params: [
-                TPType(
-                    TPath({
-                        pack: elementTypePackage,
-                        name: elementTypeName
-                    })
-                )                
-            ]
-        });
-
-        var typeDefinition:TypeDefinition = {
+        Context.defineType({
             pos: PositionTools.here(),
-            pack: requestedTypePackage,
-            name: requestedTypeName,
-            kind: TDAbstract(innerType, [innerType], [innerType]),
-            isExtern: false,
+            pack: ['sle', 'core', 'models', 'collections'],
+            name: name,
+            kind: TDAbstract(macro : ValueMapImpl<$ct>),
             meta: [
                 {
                     pos: Context.currentPos(),
@@ -160,21 +105,22 @@ class ValueMapMacro
             ],
             fields: [
                 {
-                    pos: Context.currentPos(),
-                    meta: [],
+                    pos: PositionTools.here(),
+                    name: "new",
                     access: [APublic, AInline],
-                    name: 'new',
                     kind: FFun({
                         args: [],
                         ret: null,
-                        expr: Context.parse('this = new sle.core.models.collections.ComplexValueMapBase<${elementTypePackage.join('.')}.$elementTypeName>()', PositionTools.here())
+                        expr: kind == Complex
+                            ? macro this = new ValueMapImpl<$ct>($v{kind}, $factory)
+                            : macro this = new ValueMapImpl<$ct>($v{kind}, null)
                     })
                 },
                 {
-                    pos: Context.currentPos(),
+                    pos: PositionTools.here(),
                     meta: [
                         {
-                            pos: Context.currentPos(),
+                            pos: PositionTools.here(),
                             name: ':arrayAccess'
                         }
                     ],
@@ -187,36 +133,39 @@ class ValueMapMacro
                                 type: TPath({ pack: [], name: 'String'})
                             }
                         ],
-                        ret: TPath({
-                            pack: elementTypePackage,
-                            name: elementTypeName
-                        }),
+                        ret: ct,
                         expr: macro return this.get(key)
                     })
                 }
-            ]
-        };
+            ],
+        });
 
-        return typeDefinition;
+        _typeCache.set(name, true);
+    }
+
+    private static function getAbstractNameForElementType(elementType:Type):String
+    {
+        return "ValueMap_" + ComplexTypeTools.toString(Context.toComplexType(elementType)).replace("<", "__").replace(">", "").replace(".", "_");           
     }
 
     private static function isSimpleType(type:Type):Bool
     {
-        switch(haxe.macro.TypeTools.follow(type))
+        return switch(haxe.macro.TypeTools.follow(type))
         {
             case TAbstract(_.get() => { pack: [], module: 'StdTypes' | 'UInt', name: 'Int' | 'UInt' | 'Float' | 'Bool' }, []):
-                return true;
-            case TInst(_.get() => { pack: [], module: 'String', name: 'String' }, []):
-                return true;
-            default:
-        }
+                true;
 
-        return false;
+            case TInst(_.get() => { pack: [], module: 'String', name: 'String' }, []):
+                true;
+
+            default:
+                false;
+        }
     }
 
     private static function isValueMap(t:ClassType):Bool
     {
-        return t.pack.length == 4 && t.pack[0] == 'sle' && t.pack[1] == 'core' && t.pack[2] == 'models' && t.pack[3] == 'collections' && t.name == 'ValueMap';
+        return t.pack.join('.') == 'sle.core.models.collections' && t.name == 'ValueMap';
     }
 }
 

@@ -202,7 +202,7 @@ class ValueMacro
                     }
                 }
                 else
-                    Context.fatalError('Property ${prop.name} is not of any supported types', prop.pos);
+                    Context.fatalError('Property ${prop.name} is not of any supported types, got $type', prop.pos);
 
             case TInst(instanceType, instanceTypeParams):
                 if(isValueArray(instanceType.get()))
@@ -249,8 +249,10 @@ class ValueMacro
         if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'SimpleValueMap')
             return true;
 
-        // zalipuha!
-        if(type.pack.join('.') == 'sle.core.models.collections' && ~/^ComplexValueMap_.+/.match(type.name))
+        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'ComplexValueMap')
+            return true;
+
+        if(type.pack.join('.') == 'sle.core.models.collections' && ~/ValueMap_/.match(type.name))
             return true;
 
         return false;

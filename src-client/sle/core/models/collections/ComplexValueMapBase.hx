@@ -6,7 +6,6 @@ import sle.shim.ActionDump;
 
 import sle.core.models.Constructable;
 
-@:generic
 class ComplexValueMapBase<T:(ValueBase, Constructable)> extends ValueBase
 {
     private var _data:StringMap<T>;
@@ -25,26 +24,11 @@ class ComplexValueMapBase<T:(ValueBase, Constructable)> extends ValueBase
 
     override public function process(action:ActionDump):Void
     {
-        // trace('ComplexValueMap processing action: $action');
-
         if(action.path.length == 1)
         {
-            var inst;
-
-            if(Reflect.hasField(action.newValue, '__type'))
-            {
-                // trace('__type given, creating ${Type.resolveClass(action.newValue.__type)}');
-                inst = Type.createInstance(Type.resolveClass(action.newValue.__type), []);
-            }
-            else
-            {
-                // trace('__type not given, creating T');
-                inst = new T(); // this works thanks to @:generic
-            }
-
-            // var inst = Reflect.hasField(action.newValue, '__type')
-            //     ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
-            //     : Type.createInstance(this.__t, []);
+            var inst:T = Reflect.hasField(action.newValue, '__type')
+                ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
+                : Factory.make();
 
             this.set(action.path[0], inst);
 
@@ -59,14 +43,15 @@ class ComplexValueMapBase<T:(ValueBase, Constructable)> extends ValueBase
                     newValue:   Reflect.field(action.newValue, fieldName)
                 });
             }
-
-            // trace('doing nothing');
         }
         else
         {
-            // (cast this.get(action.path.shift())).process(action);
-
             get(action.path.shift()).process(action);
         }
     }
+}
+
+class Factory
+{
+    @:generic public static function make<T:(ValueBase, Constructable)>():T return new T();
 }
