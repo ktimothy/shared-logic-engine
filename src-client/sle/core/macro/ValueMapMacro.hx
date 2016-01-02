@@ -202,21 +202,22 @@ class ValueMapMacro
 
     private static function isSimpleType(type:Type):Bool
     {
-        switch(haxe.macro.TypeTools.follow(type))
+        return switch(haxe.macro.TypeTools.follow(type))
         {
             case TAbstract(_.get() => { pack: [], module: 'StdTypes' | 'UInt', name: 'Int' | 'UInt' | 'Float' | 'Bool' }, []):
-                return true;
-            case TInst(_.get() => { pack: [], module: 'String', name: 'String' }, []):
-                return true;
-            default:
-        }
+                true;
 
-        return false;
+            case TInst(_.get() => { pack: [], module: 'String', name: 'String' }, []):
+                true;
+
+            default:
+                false;
+        }
     }
 
     private static function isValueMap(t:ClassType):Bool
     {
-        return t.pack.length == 4 && t.pack[0] == 'sle' && t.pack[1] == 'core' && t.pack[2] == 'models' && t.pack[3] == 'collections' && t.name == 'ValueMap';
+        return '${t.pack.join('.')}.${t.name}' == 'sle.core.models.collections.ValueMap';
     }
 }
 
