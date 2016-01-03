@@ -21,74 +21,76 @@ class ValueMapMacro
     {
         var localType = Context.getLocalType();
 
-        // trace('');
-        // trace('GenericBuild on ${localType}');
-
         return switch(localType)
         {
             case TInst(_.get() => classType, [elementType]):
 
-                // trace('Element type is $elementType');
-
                 if(!isValueMap(classType))
                     Context.fatalError('ValueMapMacro.build() can be called only on ValueMap<T>!', PositionTools.here());
 
-                if(isSimpleType(elementType))
-                {
-                    // trace('Element type is simple, going with SimpleValueMap');
-
-                    var targetType = Context.getType('sle.core.models.collections.SimpleValueMap');
-
-                    // trace('Got type: $targetType');
-
-                    // trace('Returning type: $targetType');
-                    // trace('');
-
-                    targetType;
-                    
-                }
-                else
-                {
-                    // trace('Element type is complex, going with ComplexValueMap');
-
-                    switch(elementType)
-                    {
-                        case TInst(_.get() => elementClassType, elementTypeParams):
-
-                            // trace('Element class package: ${elementClassType.pack}');
-                            // trace('Element class name: ${elementClassType.name}');
-                            // trace('Element type params: $elementTypeParams');
-
-                            var targetAbstractName = 'ComplexValueMap_${elementClassType.pack.join('_')}_${elementClassType.name}';
-                            var targetAbstractPackage = ['sle', 'core', 'models', 'collections'];
-
-                            // trace('Target abstract name: $targetAbstractName');
-                            // trace('Target abstract package: $targetAbstractPackage');
-
-                            var targetAbstractPath = '${targetAbstractPackage.join('.')}.$targetAbstractName';
-
-                            // trace('Setting onTypeNotFound handler');
-
-                            Context.onTypeNotFound(typeNotFoundHandler);
-
-                            // trace('Requesting type by path "$targetAbstractPath"');
-
-                            var targetAbstract = Context.getType(targetAbstractPath);
-
-                            // trace('Got type: $targetAbstract');
-                            // trace('');
-
-                            targetAbstract;
-
-
-                        default:
-                            Context.fatalError('Generation of ValueMap<T> for complex element types is implemented for TInst only, got $elementType', PositionTools.here());
-                    }
-                }
+                generateValueMapType(classType, elementType);
 
             default:
                 Context.fatalError('ValueMapMacro.build() expected sle.core.models.collections.ValueMap<T>, got $localType', PositionTools.here());
         }
+    }
+
+    private static function generateValueMapType(classType:ClassType, elementType:Type):Type
+    {
+        return isSimpleType(elementType)
+            ? Context.getType('sle.core.models.collections.SimpleValueMap')
+            : generateComplexValueMapTypeWithAnyComplexType(elementType);
+            // : Context.getType('sle.core.models.collections.ComplexValueMap');
+    }
+
+    private static function generateComplexValueMapTypeWithAnyComplexType(elementType:Type):Type
+    {
+        trace('');
+        trace('Generating ComplexValueMap for $elementType');
+
+        return switch(elementType)
+        {
+            case TInst(_.get() => elementClassType, elementTypeParams):
+
+                if(elementTypeParams.length > 0)
+                    Context.fatalError('Parametrized element types for ValueMap are not supported, got $elementType', PositionTools.here());
+
+                generateComplexValueMapTypeWithNonParametrizedClass(elementClassType);
+
+            case TAbstract(_.get() => elementAbstractType, elementTypeParams):
+
+                Context.fatalError('TAbstract handling is not implemented yet, got $elementType', PositionTools.here());
+
+            default:
+                Context.fatalError('Expected TInst or TAbstract, got $elementType', PositionTools.here());
+        }
+    }
+
+    private static function generateComplexValueMapTypeWithNonParametrizedClass(elementClassType:ClassType):Type
+    {
+        trace('Element class package: ${elementClassType.pack}');
+        trace('Element class name: ${elementClassType.name}');
+
+        var targetAbstractName = 'ComplexValueMap_${elementClassType.pack.join('_')}_${elementClassType.name}';
+        var targetAbstractPackage = ['sle', 'core', 'models', 'collections'];
+
+        trace('Target abstract name: $targetAbstractName');
+        trace('Target abstract package: $targetAbstractPackage');
+
+        var targetAbstractPath = '${targetAbstractPackage.join('.')}.$targetAbstractName';
+
+        trace('Setting onTypeNotFound handler');
+
+        Context.onTypeNotFound(typeNotFoundHandler);
+
+        trace('Requesting type by path "$targetAbstractPath"');
+
+        var targetAbstract = Context.getType(targetAbstractPath);
+
+        trace('Got type: $targetAbstract');
+        trace('');
+
+        return targetAbstract;
     }
 
     private static function typeNotFoundHandler(requestedTypePath:String):TypeDefinition
@@ -124,10 +126,15 @@ class ValueMapMacro
             ]
         });
 
-        var typeDefinition:TypeDefinition = {
+        return createComplexValueMapImplDefinition(requestedTypePackage, requestedTypeName, innerType, elementTypePackage, elementTypeName);
+    }
+
+    private static function createComplexValueMapImplDefinition(pack:Array<String>, name:String, innerType:ComplexType, elementTypePackage:Array<String>, elementTypeName:String):TypeDefinition
+    {
+        return {
             pos: PositionTools.here(),
-            pack: requestedTypePackage,
-            name: requestedTypeName,
+            pack: pack,
+            name: name,
             kind: TDAbstract(innerType, [innerType], [innerType]),
             isExtern: false,
             meta: [
@@ -195,9 +202,7 @@ class ValueMapMacro
                     })
                 }
             ]
-        };
-
-        return typeDefinition;
+        }
     }
 
     private static function isSimpleType(type:Type):Bool
