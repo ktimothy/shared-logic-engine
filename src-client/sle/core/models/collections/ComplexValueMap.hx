@@ -1,7 +1,7 @@
 package sle.core.models.collections;
 
 @:forward(process, exists, get, iterator, keys)
-abstract ComplexValueMap<T:ValueBase>(ComplexValueMapBase<T>)
+abstract ComplexValueMap<T:ValueBase>(ComplexValueMapBase<T>) from ComplexValueMapBase<T> to ComplexValueMapBase<T>
 {
     public inline function new()
     {

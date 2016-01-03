@@ -1,7 +1,7 @@
 package sle.core.models.collections;
 
 @:forward(process, exists, get, iterator, keys)
-abstract SimpleValueMap<T>(SimpleValueMapBase<T>)
+abstract SimpleValueMap<T>(SimpleValueMapBase<T>) from SimpleValueMapBase<T> to SimpleValueMapBase<T>
 {
     public inline function new()
     {
