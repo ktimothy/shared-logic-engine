@@ -1,7 +1,9 @@
 package sle.core.models.collections;
 
+import sle.core.models.Constructable;
+
 @:forward(process, exists, get, iterator, keys)
-abstract ComplexValueMap<T:ValueBase>(ComplexValueMapBase<T>) from ComplexValueMapBase<T> to ComplexValueMapBase<T>
+abstract ComplexValueMap<T:(ValueBase, Constructable)>(ComplexValueMapBase<T>) from ComplexValueMapBase<T> to ComplexValueMapBase<T>
 {
     public inline function new()
     {
