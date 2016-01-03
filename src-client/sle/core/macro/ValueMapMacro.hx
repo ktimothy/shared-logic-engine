@@ -17,7 +17,7 @@ import haxe.macro.Expr.Constant;
 
 class ValueMapMacro
 {
-    public static function build():Type
+    public static function build():ComplexType
     {
         var localType = Context.getLocalType();
 
@@ -35,24 +35,13 @@ class ValueMapMacro
         }
     }
 
-    private static function generateValueMapType(classType:ClassType, elementType:Type):Type
+    private static function generateValueMapType(classType:ClassType, elementType:Type):ComplexType
     {
-        if(isSimpleType(elementType))
-            return Context.getType('sle.core.models.collections.SimpleValueMap');
-
-        var targetType:Type = Context.getType('sle.core.models.collections.ComplexValueMap');
-
-        return switch (targetType)
-        {
-            case TAbstract(_.get() => targetAbstractType, [targetParam]):
-
-                TypeTools.unify(elementType, targetParam);
-
-                targetType;
-
-            default: 
-                Context.fatalError('Expected TAbstract, got $targetType', PositionTools.here());
-        }
+        var elementCT = Context.toComplexType(elementType);
+        return if(isSimpleType(elementType))
+            macro : sle.core.models.collections.SimpleValueMap<$elementCT>;
+        else
+            macro : sle.core.models.collections.ComplexValueMap<$elementCT>;
     }
 
     private static function isSimpleType(type:Type):Bool
