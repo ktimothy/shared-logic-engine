@@ -249,8 +249,7 @@ class ValueMacro
         if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'SimpleValueMap')
             return true;
 
-        // zalipuha!
-        if(type.pack.join('.') == 'sle.core.models.collections' && ~/^ComplexValueMap_.+/.match(type.name))
+        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'ComplexValueMap')
             return true;
 
         return false;
