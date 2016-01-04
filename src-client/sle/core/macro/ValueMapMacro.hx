@@ -11,8 +11,6 @@ import haxe.macro.Type;
 import haxe.macro.Expr;
 using StringTools;
 
-import sle.core.models.collections.ValueMapImpl.ValueMapKind;
-
 class ValueMapMacro
 {
     private static var _typeCache = new StringMap<Bool>();
