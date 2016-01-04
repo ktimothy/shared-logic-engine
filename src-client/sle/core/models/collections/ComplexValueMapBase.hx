@@ -4,15 +4,16 @@ import haxe.ds.StringMap;
 
 import sle.shim.ActionDump;
 
-import sle.core.models.Constructable;
-
-class ComplexValueMapBase<T:(ValueBase, Constructable)> extends ValueBase
+class ComplexValueMapBase<T:ValueBase> extends ValueBase
 {
+    private var _factory:Void->T;
     private var _data:StringMap<T>;
 
-    public function new()
+    public function new(factory:Void->T)
     {
         super();
+
+        _factory = factory;
 
         _data = new StringMap<T>();
     }
@@ -28,7 +29,7 @@ class ComplexValueMapBase<T:(ValueBase, Constructable)> extends ValueBase
         {
             var inst:T = Reflect.hasField(action.newValue, '__type')
                 ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
-                : Factory.make();
+                : _factory();
 
             this.set(action.path[0], inst);
 
@@ -49,9 +50,4 @@ class ComplexValueMapBase<T:(ValueBase, Constructable)> extends ValueBase
             get(action.path.shift()).process(action);
         }
     }
-}
-
-class Factory
-{
-    @:generic public static function make<T:(ValueBase, Constructable)>():T return new T();
 }
