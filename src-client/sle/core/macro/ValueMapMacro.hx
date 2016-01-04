@@ -8,15 +8,10 @@ import haxe.macro.PositionTools;
 import haxe.macro.ComplexTypeTools;
 import haxe.macro.TypeTools;
 import haxe.macro.Type;
-import haxe.macro.Expr.Access;
-import haxe.macro.Expr.TypeDefinition;
-import haxe.macro.Expr.TypeDefKind;
-import haxe.macro.Expr.ComplexType;
-import haxe.macro.Expr.FieldType;
-import haxe.macro.Expr.TypeParam;
-import haxe.macro.Expr.ExprDef;
-import haxe.macro.Expr.Constant;
+import haxe.macro.Expr;
 using StringTools;
+
+import sle.core.models.collections.ValueMapImpl.ValueMapKind;
 
 class ValueMapMacro
 {
@@ -33,12 +28,9 @@ class ValueMapMacro
                 if(!isValueMap(classType))
                     Context.fatalError('ValueMapMacro.build() can be called only on ValueMap<T>!', PositionTools.here());
 
-                var name = getAbstractNameForElementType(elementType);
+                ensureAbstractIsDefinedForElementType(elementType);
 
-                if(!_typeCache.exists(name))
-                    defineAbstractForType(elementType);
-
-                return TPath({pack: ['sle', 'core', 'models', 'collections'], name: name});
+                return TPath(getAbstractPath(elementType));
 
                 // isSimpleType(elementType)
                 //     ? macro : sle.core.models.collections.SimpleValueMap<$ctElementType>
@@ -49,103 +41,45 @@ class ValueMapMacro
         }
     }
 
-    private static function defineAbstractForType(elementType:Type):Void
+    private static function ensureAbstractIsDefinedForElementType(elementType:Type):Void
     {
-        var name = getAbstractNameForElementType(elementType);
+        var path:TypePath = getAbstractPath(elementType);
 
+        if(_typeCache.exists(path.name))
+            return;
+
+        defineAbstract(path, elementType);
+
+        _typeCache.set(path.name, true);
+    }
+
+    private static function defineAbstract(path:TypePath, elementType:Type):Void
+    {
         var ct = TypeTools.toComplexType(elementType);
 
-        var tpath = switch(ct)
-        {
-            case TPath(tp):
-                tp;
-
-            default:
-                Context.fatalError('Expected TPath, got $ct', PositionTools.here());         
-        }
-
-        var kind:sle.core.models.collections.ValueMapImpl.ValueMapKind = isSimpleType(elementType)
+        var kind:ValueMapKind = isSimpleType(elementType)
             ? Simple
             : Complex;
 
-        var factory = macro function() return new $tpath();
-
         Context.defineType({
             pos: PositionTools.here(),
-            pack: ['sle', 'core', 'models', 'collections'],
-            name: name,
-            kind: TDAbstract(macro : ValueMapImpl<$ct>),
-            meta: [
-                {
-                    pos: Context.currentPos(),
-                    name: ':forward',
-                    params: [
-                        {
-                            pos: PositionTools.here(),
-                            expr: EConst(CString('process'))
-                        },
-                        {
-                            pos: PositionTools.here(),
-                            expr: EConst(CString('exists'))
-                        },
-                        {
-                            pos: PositionTools.here(),
-                            expr: EConst(CString('get'))
-                        },
-                        {
-                            pos: PositionTools.here(),
-                            expr: EConst(CString('iterator'))
-                        },
-                        {
-                            pos: PositionTools.here(),
-                            expr: EConst(CString('keys'))
-                        }
-                    ]
-                }
-            ],
+            pack: path.pack,
+            name: path.name,
+            kind: AbstractBuilder.getKind(ct),
+            meta: AbstractBuilder.getMeta(),
             fields: [
-                {
-                    pos: PositionTools.here(),
-                    name: "new",
-                    access: [APublic, AInline],
-                    kind: FFun({
-                        args: [],
-                        ret: null,
-                        expr: kind == Complex
-                            ? macro this = new ValueMapImpl<$ct>($v{kind}, $factory)
-                            : macro this = new ValueMapImpl<$ct>($v{kind}, null)
-                    })
-                },
-                {
-                    pos: PositionTools.here(),
-                    meta: [
-                        {
-                            pos: PositionTools.here(),
-                            name: ':arrayAccess'
-                        }
-                    ],
-                    access: [APublic, AInline],
-                    name: 'arrayRead',
-                    kind: FFun({
-                        args: [
-                            {
-                                name: 'key',
-                                type: TPath({ pack: [], name: 'String'})
-                            }
-                        ],
-                        ret: ct,
-                        expr: macro return this.get(key)
-                    })
-                }
+                AbstractBuilder.getNewField(ct, kind, AbstractBuilder.getFactory(ct)),
+                AbstractBuilder.getArrayReadField(ct)
             ],
         });
-
-        _typeCache.set(name, true);
     }
 
-    private static function getAbstractNameForElementType(elementType:Type):String
+    private static function getAbstractPath(elementType:Type):TypePath
     {
-        return "ValueMap_" + ComplexTypeTools.toString(Context.toComplexType(elementType)).replace("<", "__").replace(">", "").replace(".", "_");           
+        return {
+            pack: ['sle', 'core', 'models', 'collections'],
+            name: "ValueMap_" + ComplexTypeTools.toString(Context.toComplexType(elementType)).replace("<", "__").replace(">", "").replace(".", "_")
+        };
     }
 
     private static function isSimpleType(type:Type):Bool
@@ -166,6 +100,101 @@ class ValueMapMacro
     private static function isValueMap(t:ClassType):Bool
     {
         return t.pack.join('.') == 'sle.core.models.collections' && t.name == 'ValueMap';
+    }
+}
+
+class AbstractBuilder
+{
+    public static function getMeta():Metadata
+    {
+        return [
+            {
+                pos: Context.currentPos(),
+                name: ':forward',
+                params: [
+                    {
+                        pos: PositionTools.here(),
+                        expr: EConst(CString('process'))
+                    },
+                    {
+                        pos: PositionTools.here(),
+                        expr: EConst(CString('exists'))
+                    },
+                    {
+                        pos: PositionTools.here(),
+                        expr: EConst(CString('get'))
+                    },
+                    {
+                        pos: PositionTools.here(),
+                        expr: EConst(CString('iterator'))
+                    },
+                    {
+                        pos: PositionTools.here(),
+                        expr: EConst(CString('keys'))
+                    }
+                ]
+            }
+        ];
+    }
+
+    public static function getKind(elementType:ComplexType):TypeDefKind
+    {
+        return TDAbstract(macro : ValueMapImpl<$elementType>);
+    }
+
+    public static function getFactory(ct:ComplexType):Expr
+    {
+        var tpath = switch(ct)
+        {
+            case TPath(tp):
+                tp;
+
+            default:
+                Context.fatalError('Expected TPath, got $ct', PositionTools.here());         
+        }
+
+        return macro function() return new $tpath();
+    }
+
+    public static function getNewField(elementType:ComplexType, kind:ValueMapKind, factory:Expr):Field
+    {
+        return {
+            pos: PositionTools.here(),
+            name: "new",
+            access: [APublic, AInline],
+            kind: FFun({
+                args: [],
+                ret: null,
+                expr: kind == Complex
+                    ? macro this = new ValueMapImpl<$elementType>($v{kind}, $factory)
+                    : macro this = new ValueMapImpl<$elementType>($v{kind}, null)
+            })
+        };
+    }
+
+    public static function getArrayReadField(returnType:ComplexType):Field
+    {
+        return {
+            pos: PositionTools.here(),
+            meta: [
+                {
+                    pos: PositionTools.here(),
+                    name: ':arrayAccess'
+                }
+            ],
+            access: [APublic, AInline],
+            name: 'arrayRead',
+            kind: FFun({
+                args: [
+                    {
+                        name: 'key',
+                        type: TPath({ pack: [], name: 'String'})
+                    }
+                ],
+                ret: returnType,
+                expr: macro return this.get(key)
+            })
+        };
     }
 }
 
