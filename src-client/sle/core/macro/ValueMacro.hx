@@ -15,8 +15,6 @@ class ValueMacro
 {
     public static function build():Array<Field>
     {
-        // trace('AutoBuild on ${Context.getLocalClass()}');
-
         var newFields       :Array<Field> = [];
         var bindableProps   :Array<Field> = [];
         var fields          :Array<Field> = Context.getBuildFields();
@@ -31,7 +29,6 @@ class ValueMacro
 
             if (field.access.indexOf(APublic) == -1)
             {
-                // trace('Field "${field.name}" is non-public, passing without changes');
                 newFields.push(field);
                 continue;
             }
@@ -39,8 +36,6 @@ class ValueMacro
             switch (field.kind)
             {
                 case FVar(tPath, _):
-
-                    // trace('Field "${field.name}" is a public variable, turning into a read-only property');
 
                     var prop = generateReadOnlyProperty(field);
 
@@ -52,7 +47,6 @@ class ValueMacro
 
                     if(field.name == 'new')
                     {
-                        //trace('Field "${field.name}" is a constructor, passing without changes');
                         newFields.push(field);
                         continue;
                     }
@@ -70,8 +64,6 @@ class ValueMacro
 
         newFields.push(generateProcessMethod(bindableProps));
 
-        //trace('Done building class: ${Context.getLocalClass()}');
-
         return newFields;
     }
 
@@ -85,8 +77,6 @@ class ValueMacro
                         'default',
                         'null',
                         tPath
-                        //Context.parse(genTypeDefaultValue(ComplexTypeTools.toType(tPath), field.pos), field.pos)
-                        //macro ${genTypeDefaultValue(ComplexTypeTools.toType(tPath), field.pos)}
                     ),
                     meta: [],
                     name: field.name,
@@ -123,8 +113,6 @@ class ValueMacro
             //trace($v{Context.getLocalClass().toString()} + ' processing action: ' + action);
             ${megaswitch};   
         }
-
-        //trace(haxe.macro.ExprTools.toString(code));
 
         return {
             kind: FFun(
@@ -205,12 +193,7 @@ class ValueMacro
                     Context.fatalError('Property ${prop.name} is not of any supported types, got $type', prop.pos);
 
             case TInst(instanceType, instanceTypeParams):
-                // if(isValueArray(instanceType.get()))
-                // {
-                //     Context.warning('ValueArray is not supported yet, property "${prop.name}" will not recieve changes', prop.pos);
-                //     macro trace(${haxe.macro.MacroStringTools.formatString('Ignoring changes for field "${prop.name}" (not implemented yet)', prop.pos)});
-                // }
-                // else 
+
                 if(isValue(instanceType.get()))
                 {
                     macro if(action.path.length == 1)
@@ -247,37 +230,14 @@ class ValueMacro
 
     private static function isValueMap(type:haxe.macro.Type.AbstractType):Bool
     {
-        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'SimpleValueMap')
-            return true;
-
-        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'ComplexValueMap')
-            return true;
-
         if(type.pack.join('.') == 'sle.core.models.collections' && ~/ValueMap_/.match(type.name))
             return true;
 
         return false;
     }
 
-    // private static function isValueArray(type:haxe.macro.Type.ClassType):Bool
-    // {
-    //     if(type.name == 'ValueArray' && type.pack.length == 4 && type.pack[0] == 'sle' && type.pack[1] == 'core' && type.pack[2] == 'models' && type.pack[3] == 'collections')
-    //         return true;
-
-    //     if(type.superClass == null)
-    //         return false;
-
-    //     return isValueArray(type.superClass.t.get());
-    // }
-
     private static function isValueArray(type:haxe.macro.Type.AbstractType):Bool
     {
-        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'SimpleValueArray')
-            return true;
-
-        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'ComplexValueArray')
-            return true;
-
         if(type.pack.join('.') == 'sle.core.models.collections' && ~/ValueArray_/.match(type.name))
             return true;
 
@@ -295,27 +255,6 @@ class ValueMacro
             return true;
 
         return isValue(superType);
-    }
-
-    private static function genTypeDefaultValue(type:haxe.macro.Type, pos:haxe.macro.Expr.Position):String
-    {
-        return switch(TypeTools.follow(type))
-        {
-            case TAbstract(_.get() => { pack: [], module: 'StdTypes' | 'UInt', name: 'Int' | 'UInt' | 'Float' }, []):
-                '0';
-
-            case TAbstract(_.get() => { pack: [], module: 'StdTypes', name: 'Bool' }, []):
-                'false';
-
-            case TAbstract(_.get() => { type: t }, []):
-                genTypeDefaultValue(t, pos);
-
-            case TInst(_, []):
-                'null';
-
-            default:
-                Context.fatalError('Cannot generate default value for type $type', pos);
-        }
     }
 }
 
