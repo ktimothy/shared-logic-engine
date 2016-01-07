@@ -1,5 +1,7 @@
 package sle.core.actions;
 
+import sle.shim.ActionType;
+
 interface IAction
 {
     var type(default, null):ActionType;

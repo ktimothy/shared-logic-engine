@@ -1,8 +1,9 @@
 package sle.core.models.collections;
 
+import sle.shim.ActionType;
+
 import sle.core.actions.changes.impl.ComplexValueMapChange;
 import sle.core.actions.ActionLog;
-import sle.core.actions.ActionType;
 
 class ComplexValueMapBase<T:ValueBase> extends ValueMapBase<T>
 {

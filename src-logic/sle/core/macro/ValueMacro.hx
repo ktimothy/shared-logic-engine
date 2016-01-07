@@ -23,7 +23,7 @@ typedef PublicVarInfo =
 class ValueMacro
 {
     private static var ACTION_LOG:String = 'sle.core.actions.ActionLog';
-    private static var ACTION_TYPE:String = 'sle.core.actions.ActionType.VAR';
+    private static var ACTION_TYPE:String = 'sle.shim.ActionType.VAR';
     private static var RESTRICTED:Array<String> = ['__name', '__parent', '__hash', '__isRooted', 'getTypeName'];
 
     public static function build():Array<Field>
