@@ -175,7 +175,7 @@ class ValueMacro
 
             case TAbstract(instanceType, instanceTypeParams):             
 
-                if(isValueMap(instanceType.get()))
+                if(isValueMap(instanceType.get()) || isValueArray(instanceType.get()))
                 {
                     macro if(action.path.length == 1)
                     {
@@ -205,12 +205,13 @@ class ValueMacro
                     Context.fatalError('Property ${prop.name} is not of any supported types, got $type', prop.pos);
 
             case TInst(instanceType, instanceTypeParams):
-                if(isValueArray(instanceType.get()))
-                {
-                    Context.warning('ValueArray is not supported yet, property "${prop.name}" will not recieve changes', prop.pos);
-                    macro trace(${haxe.macro.MacroStringTools.formatString('Ignoring changes for field "${prop.name}" (not implemented yet)', prop.pos)});
-                }
-                else if(isValue(instanceType.get()))
+                // if(isValueArray(instanceType.get()))
+                // {
+                //     Context.warning('ValueArray is not supported yet, property "${prop.name}" will not recieve changes', prop.pos);
+                //     macro trace(${haxe.macro.MacroStringTools.formatString('Ignoring changes for field "${prop.name}" (not implemented yet)', prop.pos)});
+                // }
+                // else 
+                if(isValue(instanceType.get()))
                 {
                     macro if(action.path.length == 1)
                     {
@@ -258,15 +259,29 @@ class ValueMacro
         return false;
     }
 
-    private static function isValueArray(type:haxe.macro.Type.ClassType):Bool
+    // private static function isValueArray(type:haxe.macro.Type.ClassType):Bool
+    // {
+    //     if(type.name == 'ValueArray' && type.pack.length == 4 && type.pack[0] == 'sle' && type.pack[1] == 'core' && type.pack[2] == 'models' && type.pack[3] == 'collections')
+    //         return true;
+
+    //     if(type.superClass == null)
+    //         return false;
+
+    //     return isValueArray(type.superClass.t.get());
+    // }
+
+    private static function isValueArray(type:haxe.macro.Type.AbstractType):Bool
     {
-        if(type.name == 'ValueArray' && type.pack.length == 4 && type.pack[0] == 'sle' && type.pack[1] == 'core' && type.pack[2] == 'models' && type.pack[3] == 'collections')
+        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'SimpleValueArray')
             return true;
 
-        if(type.superClass == null)
-            return false;
+        if(type.pack.join('.') == 'sle.core.models.collections' && type.name == 'ComplexValueArray')
+            return true;
 
-        return isValueArray(type.superClass.t.get());
+        if(type.pack.join('.') == 'sle.core.models.collections' && ~/ValueArray_/.match(type.name))
+            return true;
+
+        return false;
     }
 
     private static function isValue(type:haxe.macro.Type.ClassType):Bool

@@ -295,4 +295,76 @@ class ValueTest extends TestCase
         assertEquals(false, model.nested_complex_map['foo']['baz'].x);
     }
     */
+
+    public function testSimpleArrayIsProcessedProperly()
+    {
+        var model = new TestDump();
+
+        var action1:ActionDump = {
+            opName:     'var',
+            path:       ['bare_array'],
+            newValue:   [1]
+        }
+
+        model.process(action1);
+
+        assertEquals(1, model.bare_array[0]);
+
+        var action2:ActionDump = {
+            opName:     'var',
+            path:       ['bare_array', '0'],
+            newValue:   2
+        }
+
+        model.process(action2);
+
+        assertEquals(2, model.bare_array[0]);
+    }
+
+    public function testComplexArrayIsProcessedProperly()
+    {
+        var model = new TestDump();
+
+        var action1:ActionDump = {
+            opName:     'var',
+            path:       ['complex_array'],
+            newValue:   [{x: 0.0, y: 0.0}]
+        }
+
+        model.process(action1);
+
+        assertEquals(0.0, model.complex_array[0].x);
+        assertEquals(0.0, model.complex_array[0].y);
+
+        var action2:ActionDump = {
+            opName:     'var',
+            path:       ['complex_array', '0'],
+            newValue:   {x: 1.0, y: 1.0}
+        }
+
+        model.process(action2);
+
+        assertEquals(1.0, model.complex_array[0].x);
+        assertEquals(1.0, model.complex_array[0].y);
+
+
+        var action3_x:ActionDump = {
+            opName:     'var',
+            path:       ['complex_array', '0', 'x'],
+            newValue:   2.0
+        }
+
+        var action3_y:ActionDump = {
+            opName:     'var',
+            path:       ['complex_array', '0', 'y'],
+            newValue:   2.0
+        }
+
+        model.process(action3_x);
+        model.process(action3_y);
+
+        assertEquals(2.0, model.complex_array[0].x);
+        assertEquals(2.0, model.complex_array[0].y);
+
+    }
 }
