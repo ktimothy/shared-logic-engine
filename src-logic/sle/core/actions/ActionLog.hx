@@ -1,6 +1,7 @@
 package sle.core.actions;
 
 import sle.shim.ActionDump;
+import sle.shim.ActionType;
 
 @:allow(sle.core.models.ValueBase)
 @:allow(sle.core.ContextBase)

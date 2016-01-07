@@ -1,5 +1,7 @@
 package sle.core.actions.changes.impl;
 
+import sle.shim.ActionType;
+
 import sle.core.actions.changes.base.SimpleChangeBase;
 import sle.core.models.ValueBase;
 

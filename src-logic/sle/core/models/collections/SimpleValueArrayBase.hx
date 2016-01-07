@@ -1,7 +1,8 @@
 package sle.core.models.collections;
 
+import sle.shim.ActionType;
+
 import sle.core.actions.changes.impl.SimpleValueArrayChange;
-import sle.core.actions.ActionType;
 import sle.core.actions.ActionLog;
 
 class SimpleValueArrayBase<T> extends ValueArrayBase<T>
