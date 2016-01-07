@@ -15,7 +15,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['integer'],
             newValue:   -1
         }
@@ -30,7 +30,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['unsigned_integer'],
             newValue:   1
         }
@@ -45,7 +45,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['number'],
             newValue:   -1.1
         }
@@ -60,7 +60,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['string'],
             newValue:   'test'
         }
@@ -75,7 +75,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['bool'],
             newValue:   true
         }
@@ -90,7 +90,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['coords'],
             newValue:   {x: 1.0, y: 1.0}
         }
@@ -101,7 +101,7 @@ class ValueTest extends TestCase
         assertEquals(1.0, model.coords.y);
 
         var action2:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['coords', 'x'],
             newValue:   2.0
         }
@@ -116,7 +116,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['coordsInherited'],
             newValue:   {x: 1.0, y: 1.0, z: 1.0, __type:'models.CoordsInherited'}
         }
@@ -126,7 +126,7 @@ class ValueTest extends TestCase
         assertEquals(1.0, cast(model.coordsInherited, CoordsInherited).z);
 
         var action2:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['coordsInherited', 'z'],
             newValue:   2.0
         }
@@ -141,7 +141,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['bare_map'],
             newValue:   {test_property: 'test_value'}
         }
@@ -151,7 +151,7 @@ class ValueTest extends TestCase
         assertEquals('test_value', model.bare_map['test_property']);
 
         var action2:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['bare_map', 'test_property'],
             newValue:   'test_value_2'
         }
@@ -166,7 +166,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['complex_map'],
             newValue:   {test_property: {x: true}}
         }
@@ -176,7 +176,7 @@ class ValueTest extends TestCase
         assertEquals(true, model.complex_map['test_property'].x);
 
         var action2:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['complex_map', 'test_property'],
             newValue:   {x: false}
         }
@@ -186,7 +186,7 @@ class ValueTest extends TestCase
         assertEquals(false, model.complex_map['test_property'].x);
 
         var action3:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['complex_map', 'test_property', 'x'],
             newValue:   true
         }
@@ -203,7 +203,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['nested_simple_map'],
             newValue:   {foo: {bar: 'test1'}}
         }
@@ -215,7 +215,7 @@ class ValueTest extends TestCase
         assertEquals('test1', model.nested_simple_map['foo']['bar']);
 
         var action2:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['nested_simple_map', 'foo'],
             newValue:   {baz: 'test2'}
         }
@@ -227,7 +227,7 @@ class ValueTest extends TestCase
         assertEquals('test2', model.nested_simple_map['foo']['baz']);
 
         var action3:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['nested_simple_map', 'foo', 'baz'],
             newValue:   'test3'
         }
@@ -247,7 +247,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['nested_complex_map'],
             newValue:   {foo: {bar: {x: true}}}
         }
@@ -259,7 +259,7 @@ class ValueTest extends TestCase
         assertEquals(true, model.nested_complex_map['foo']['bar'].x);
 
         var action2:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['nested_complex_map', 'foo'],
             newValue:   {baz: {x: false}}
         }
@@ -271,7 +271,7 @@ class ValueTest extends TestCase
         assertEquals(false, model.nested_complex_map['foo']['baz'].x);
 
         var action3:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['nested_complex_map', 'foo', 'baz'],
             newValue:   {x: true}
         }
@@ -283,7 +283,7 @@ class ValueTest extends TestCase
         assertEquals(true, model.nested_complex_map['foo']['baz'].x);
 
         var action4:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['nested_complex_map', 'foo', 'baz', 'x'],
             newValue:   false
         }
@@ -301,7 +301,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['bare_array'],
             newValue:   [1]
         }
@@ -311,7 +311,7 @@ class ValueTest extends TestCase
         assertEquals(1, model.bare_array[0]);
 
         var action2:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['bare_array', '0'],
             newValue:   2
         }
@@ -326,7 +326,7 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['complex_array'],
             newValue:   [{x: 0.0, y: 0.0}]
         }
@@ -337,7 +337,7 @@ class ValueTest extends TestCase
         assertEquals(0.0, model.complex_array[0].y);
 
         var action2:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['complex_array', '0'],
             newValue:   {x: 1.0, y: 1.0}
         }
@@ -349,13 +349,13 @@ class ValueTest extends TestCase
 
 
         var action3_x:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['complex_array', '0', 'x'],
             newValue:   2.0
         }
 
         var action3_y:ActionDump = {
-            opName:     'var',
+            opName:     VAR,
             path:       ['complex_array', '0', 'y'],
             newValue:   2.0
         }

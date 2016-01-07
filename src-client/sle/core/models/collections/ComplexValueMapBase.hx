@@ -39,7 +39,7 @@ class ComplexValueMapBase<T:ValueBase> extends ValueBase
                     continue;
 
                 inst.process({
-                    opName:     'var',
+                    opName:     VAR,
                     path:       [fieldName],
                     newValue:   Reflect.field(action.newValue, fieldName)
                 });

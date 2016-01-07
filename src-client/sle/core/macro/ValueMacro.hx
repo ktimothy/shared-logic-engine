@@ -177,7 +177,7 @@ class ValueMacro
                                 continue;
 
                             $i{prop.name}.process({
-                                opName:     'var',
+                                opName:     VAR,
                                 path:       [fieldName],
                                 newValue:   Reflect.field(action.newValue, fieldName)
                             });
@@ -208,7 +208,7 @@ class ValueMacro
                                 continue;
 
                             $i{prop.name}.process({
-                                opName:     'var',
+                                opName:     VAR,
                                 path:       [fieldName],
                                 newValue:   Reflect.field(action.newValue, fieldName)
                             });
