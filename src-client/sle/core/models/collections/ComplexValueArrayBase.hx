@@ -4,6 +4,8 @@ import sle.shim.ActionDump;
 
 class ComplexValueArrayBase<T:ValueBase> extends ValueBase
 {
+    public var length(get, never):UInt;
+
     private var _factory:Void->T;
     private var _data:Array<T>;
 
@@ -16,6 +18,7 @@ class ComplexValueArrayBase<T:ValueBase> extends ValueBase
         _data = new Array<T>();
     }
 
+    public function get_length():UInt return _data.length;
     public function get(key:Int):T return _data[key];
     public function set(key:Int, value:T):Void _data[key] = value;
 
@@ -23,27 +26,67 @@ class ComplexValueArrayBase<T:ValueBase> extends ValueBase
     {
         if(action.path.length == 1)
         {
-            var inst:T = Reflect.hasField(action.newValue, '__type')
-                ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
-                : _factory();
 
-            set(Std.parseInt(action.path[0]), inst);
-
-            for(fieldName in Reflect.fields(action.newValue))
+            switch (action.opName)
             {
-                if(fieldName == '__type')
-                    continue;
+                case PUSH:
+                    var element = createElement(action);
+                    _data.push(element);
+                    updateElement(element, action);
 
-                inst.process({
-                    opName:     VAR,
-                    path:       [fieldName],
-                    newValue:   Reflect.field(action.newValue, fieldName)
-                });
+                case POP:
+                    _data.pop();
+
+                case UNSHIFT:
+                    var element = createElement(action);
+                    _data.unshift(element);
+                    updateElement(element, action); 
+
+                case SHIFT:
+                    _data.shift();
+
+                case INSERT:
+                    var element = createElement(action);
+                    _data.insert(Std.parseInt(action.path[0]), element);
+                    updateElement(element, action);
+
+                case REMOVE:
+                    throw new Error('Remove action for ComplexValueArray is not implemented yet');
+
+                case INDEX:
+                    var element = createElement(action);
+                    _data[Std.parseInt(action.path[0])] = element;
+                    updateElement(element, action);
+
+                default:
+                    throw new Error('Wrong action type "${action.opName}" for ValueArray');
             }
         }
         else
         {
             get(Std.parseInt(action.path.shift())).process(action);
+        }
+    }
+
+    private function createElement(action:ActionDump):T
+    {
+        return Reflect.hasField(action.newValue, '__type')
+            ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
+            : _factory();        
+    }
+
+    private function updateElement(element:T, action:ActionDump):Void
+    {
+        for(fieldName in Reflect.fields(action.newValue))
+        {
+            if(fieldName == '__type')
+                continue;
+
+            element.process({
+                opName:     VAR,
+                path:       [fieldName],
+                newValue:   Reflect.field(action.newValue, fieldName)
+            });
         }
     }
 }

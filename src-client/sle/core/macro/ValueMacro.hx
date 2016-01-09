@@ -163,7 +163,7 @@ class ValueMacro
 
             case TAbstract(instanceType, instanceTypeParams):             
 
-                if(isValueMap(instanceType.get()) || isValueArray(instanceType.get()))
+                if(isValueMap(instanceType.get()))
                 {
                     macro if(action.path.length == 1)
                     {
@@ -180,6 +180,31 @@ class ValueMacro
                                 opName:     VAR,
                                 path:       [fieldName],
                                 newValue:   Reflect.field(action.newValue, fieldName)
+                            });
+                        }
+                    }
+                    else
+                    {
+                        action.path.shift();
+                        $i{prop.name}.process(action);
+                    }
+                }
+                else if(isValueArray(instanceType.get()))
+                {
+                    macro if(action.path.length == 1)
+                    {
+                        $i{prop.name} = Reflect.hasField(action.newValue, '__type')
+                            ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
+                            : new $tPath();
+
+                        // var array:Array<Dynamic>
+
+                        for(element in cast(action.newValue, Array<Dynamic>))
+                        {
+                            $i{prop.name}.process({
+                                opName:     PUSH,
+                                path:       ['0'],
+                                newValue:   element
                             });
                         }
                     }

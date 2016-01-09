@@ -178,6 +178,10 @@ class ValueArrayAbstractDefinitionFactoryBase
                     {
                         pos: PositionTools.here(),
                         expr: EConst(CString('process'))
+                    },
+                    {
+                        pos: PositionTools.here(),
+                        expr: EConst(CString('length'))
                     }
                     // to be continued
                 ]

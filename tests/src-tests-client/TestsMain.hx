@@ -17,6 +17,8 @@ class TestsMain
         var r = new haxe.unit.TestRunner();
 
         r.add(new ValueTest());
+        r.add(new SimpleValueArrayTest());
+        r.add(new ComplexValueArrayTest());
         
         r.run();
     }
