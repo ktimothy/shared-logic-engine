@@ -154,8 +154,8 @@ class SimpleValueArrayTest extends TestCase
 
         model.process({
             opName:     REMOVE,
-            path:       ['bare_array', '0'],
-            newValue:   7
+            path:       ['bare_array', '1'],
+            newValue:   null
         });
 
         assertEquals(2, model.bare_array.length);

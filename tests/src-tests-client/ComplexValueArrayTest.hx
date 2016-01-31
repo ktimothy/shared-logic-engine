@@ -156,30 +156,30 @@ class ComplexValueArrayTest extends TestCase
         assertEquals(1.0, model.complex_array[2].y);
     }
 
-    // public function testRemove()
-    // {
-    //     var model = new TestDump();
+    public function testRemove()
+    {
+        var model = new TestDump();
 
-    //     model.process({
-    //         opName:     VAR,
-    //         path:       ['complex_array'],
-    //         newValue:   [{x: 0.0, y: 0.0}, {x: 7.0, y: 7.0}, {x: 1.0, y: 1.0}]
-    //     });
+        model.process({
+            opName:     VAR,
+            path:       ['complex_array'],
+            newValue:   [{x: 0.0, y: 0.0}, {x: 7.0, y: 7.0}, {x: 1.0, y: 1.0}]
+        });
 
-    //     model.process({
-    //         opName:     REMOVE,
-    //         path:       ['complex_array', '0'],
-    //         newValue:   {x: 7.0, y: 7.0}
-    //     });
+        model.process({
+            opName:     REMOVE,
+            path:       ['complex_array', '1'],
+            newValue:   null
+        });
 
-    //     assertEquals(2, model.complex_array.length);
+        assertEquals(2, model.complex_array.length);
 
-    //     assertEquals(0.0, model.complex_array[0].x);
-    //     assertEquals(0.0, model.complex_array[0].y);
+        assertEquals(0.0, model.complex_array[0].x);
+        assertEquals(0.0, model.complex_array[0].y);
 
-    //     assertEquals(1.0, model.complex_array[1].x);
-    //     assertEquals(1.0, model.complex_array[1].y);
-    // }
+        assertEquals(1.0, model.complex_array[1].x);
+        assertEquals(1.0, model.complex_array[1].y);
+    }
 
     public function testIndex()
     {

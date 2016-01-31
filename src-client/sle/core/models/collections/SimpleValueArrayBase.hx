@@ -31,7 +31,7 @@ class SimpleValueArrayBase<T> extends ValueBase
             case UNSHIFT:   _data.unshift(action.newValue);
             case SHIFT:     _data.shift();
             case INSERT:    _data.insert(Std.parseInt(action.path[0]), action.newValue);
-            case REMOVE:    _data.remove(action.newValue);
+            case REMOVE:    _data.splice(Std.parseInt(action.path[0]), 1);
             case INDEX:     _data[Std.parseInt(action.path[0])] = action.newValue;
             default:        throw new Error('Wrong action type "${action.opName}" for ValueArray');
         }

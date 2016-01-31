@@ -51,7 +51,7 @@ class ComplexValueArrayBase<T:ValueBase> extends ValueBase
                     updateElement(element, action);
 
                 case REMOVE:
-                    throw new Error('Remove action for ComplexValueArray is not implemented yet');
+                    _data.splice(Std.parseInt(action.path[0]), 1);
 
                 case INDEX:
                     var element = createElement(action);
