@@ -7,6 +7,7 @@ import sle.shim.IEnvironment;
 import sle.shim.CommandResult;
 import sle.shim.QueryResult;
 import sle.shim.ActionDump;
+import sle.shim.Error;
 
 import sle.core.actions.ActionLog;
 import sle.core.models.ValueBase;

@@ -276,7 +276,7 @@ class ValueMacro
 
         code += 'if (!$ACTION_LOG._valueWriteEnabled)';
         code += '{';
-        code += 'throw new sle.core.Error("Unable to write value!");';
+        code += 'throw new sle.shim.Error("Unable to write value!");';
         code += '}';
 
         code += 'if(${UtilMacro.genComparisonCode('this.$fieldName', 'value', fieldType, pos)})';
@@ -296,7 +296,7 @@ class ValueMacro
             code += '}';
             code += 'if (value != null)';
             code += '{';
-            code += 'if (value.__parent != null) { throw new sle.core.Error("Unable to re-parent value!"); }';
+            code += 'if (value.__parent != null) { throw new sle.shim.Error("Unable to re-parent value!"); }';
             code += 'value.__parent = this;';
             code += 'value.__name = "$fieldName";';
             code += 'value.setRooted(this.__isRooted);';
@@ -377,7 +377,7 @@ class ValueMacro
         {
             code += 'if (!Reflect.hasField(dump, "${pv.name}"))';
             code += '{';
-            code += 'throw new sle.core.Error("Field ${pv.name} not found in dump!");';
+            code += 'throw new sle.shim.Error("Field ${pv.name} not found in dump!");';
             code += '}';
 
             if (UtilMacro.typeIsSimple(pv.type))

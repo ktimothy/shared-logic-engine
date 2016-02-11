@@ -6,7 +6,7 @@ import queries.SimpleQuery;
 import sle.core.queries.Queries;
 import models.TestDump;
 import haxe.unit.TestCase;
-import sle.core.Error;
+import sle.shim.Error;
 
 class QueriesTest extends TestCase
 {

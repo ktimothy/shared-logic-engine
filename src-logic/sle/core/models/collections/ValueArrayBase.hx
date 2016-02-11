@@ -1,5 +1,7 @@
 package sle.core.models.collections;
 
+import sle.shim.Error;
+
 class ValueArrayBase<T> extends ValueBase
 {
     public var length(get, never):Int;

@@ -28,7 +28,7 @@ class CommandsParamsMacro
                     {
                         case TPath(_ => {name: 'Void'}):
                         default:
-                            throw new Error("Method 'execute' must return Void!", field.pos);
+                            throw "Method 'execute' must return Void!";
                     }
 
                     // allow only simple types and Const<T>
@@ -41,13 +41,13 @@ class CommandsParamsMacro
                                 // not that we do not check parameter of Const -it is because ConstMacro will do it for us
 
                             case TPath({name: t}):
-                                throw new Error('Invalid type of argument - ${t}! Only Const<T>, String, Bool, Int, Float are allowed!', field.pos);
+                                throw 'Invalid type of argument - ${t}! Only Const<T>, String, Bool, Int, Float are allowed!';
 
                             case null:
-                                throw new Error('Argument should have a type! Only Const<T>, String, Bool, Int, Float are allowed!', field.pos);
+                                throw 'Argument should have a type! Only Const<T>, String, Bool, Int, Float are allowed!';
 
                             default:
-                                throw new Error('Invalid type of argument! Only Const<T>, String, Bool, Int, Float are allowed!', field.pos);
+                                throw 'Invalid type of argument! Only Const<T>, String, Bool, Int, Float are allowed!';
                         }
                     }
                 default:

@@ -1,6 +1,7 @@
 package sle.core.models.collections;
 
 import sle.shim.ActionDump;
+import sle.shim.Error;
 
 class ValueArrayBase<T>
 {
@@ -17,6 +18,6 @@ class ValueArrayBase<T>
 
     public function process(action:ActionDump):Void
     {
-        throw new sle.core.Error('Not implemented');
+        throw new Error('Not implemented');
     }
 }

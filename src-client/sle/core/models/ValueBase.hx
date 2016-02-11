@@ -1,6 +1,7 @@
 package sle.core.models;
 
 import sle.shim.ActionDump;
+import sle.shim.Error;
 
 class ValueBase
 {
@@ -8,6 +9,6 @@ class ValueBase
 
     public function process(action:ActionDump):Void
     {
-        throw new sle.core.Error('This should never happen');
+        throw new Error('This should never happen');
     }
 }

@@ -1,6 +1,7 @@
 package sle.core.actions.changes.impl;
 
 import sle.shim.ActionType;
+import sle.shim.Error;
 
 import sle.core.models.collections.ComplexValueMapBase;
 import sle.core.models.ValueBase;

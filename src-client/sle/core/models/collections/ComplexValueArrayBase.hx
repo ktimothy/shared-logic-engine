@@ -1,6 +1,7 @@
 package sle.core.models.collections;
 
 import sle.shim.ActionDump;
+import sle.shim.Error;
 
 class ComplexValueArrayBase<T:ValueBase> extends ValueBase
 {

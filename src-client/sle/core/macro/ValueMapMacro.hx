@@ -222,9 +222,9 @@ class AbstractDefinitionFactoryBase
         };
     }
 
-    private function getNewField(elementType:ComplexType):Field throw new Error('Abstract method', PositionTools.here());
+    private function getNewField(elementType:ComplexType):Field throw 'Abstract method';
 
-    private function getKind(elementType:ComplexType):TypeDefKind throw new Error('Abstract method', PositionTools.here());
+    private function getKind(elementType:ComplexType):TypeDefKind throw 'Abstract method';
 }
 
 #end

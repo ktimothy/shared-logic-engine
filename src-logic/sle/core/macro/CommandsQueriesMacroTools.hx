@@ -62,7 +62,7 @@ class CommandsQueriesMacroTools
                 cmdClassName = className;
 
             default:
-                throw new Error("Command class (Class<T>) expected!", Context.currentPos());
+                throw "Command class (Class<T>) expected!";
         }
 
         return cmdClassName;
@@ -85,7 +85,7 @@ class CommandsQueriesMacroTools
                 variableName = fName;
 
             default:
-                throw new Error("Expected call from local variable or this, but: " + Context.typeExpr(contextExpr), Context.currentPos());
+                throw "Expected call from local variable or this, but: " + Context.typeExpr(contextExpr);
         }
 
         return variableName;

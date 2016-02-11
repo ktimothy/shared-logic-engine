@@ -1,6 +1,7 @@
 package sle.core.models.collections;
 
 import sle.shim.ActionType;
+import sle.shim.Error;
 
 import sle.core.actions.changes.impl.ComplexValueArrayChange;
 import sle.core.actions.ActionLog;

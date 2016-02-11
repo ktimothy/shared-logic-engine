@@ -1,4 +1,4 @@
-package sle.core;
+package sle.shim;
 
 #if js
 

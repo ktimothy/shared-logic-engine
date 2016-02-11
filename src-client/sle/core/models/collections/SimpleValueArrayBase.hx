@@ -1,6 +1,7 @@
 package sle.core.models.collections;
 
 import sle.shim.ActionDump;
+import sle.shim.Error;
 
 class SimpleValueArrayBase<T> extends ValueBase
 {
@@ -22,7 +23,7 @@ class SimpleValueArrayBase<T> extends ValueBase
     override public function process(action:ActionDump):Void
     {
         if(action.path.length > 1)
-            throw new sle.core.Error('Got a complex action for SimpleValueArray: $action');
+            throw new Error('Got a complex action for SimpleValueArray: $action');
 
         switch (action.opName)
         {

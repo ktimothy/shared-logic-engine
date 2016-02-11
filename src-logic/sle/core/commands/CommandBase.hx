@@ -3,6 +3,7 @@ package sle.core.commands;
 import sle.core.queries.Queries;
 
 import sle.shim.IEnvironment;
+import sle.shim.Error;
 
 @:autoBuild(sle.core.macro.CommandsParamsMacro.build())
 @:allow(sle.core.commands.Commands)

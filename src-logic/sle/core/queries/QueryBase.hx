@@ -1,6 +1,7 @@
 package sle.core.queries;
 
 import sle.shim.IEnvironment;
+import sle.shim.Error;
 
 @:allow(sle.core.queries.Queries)
 

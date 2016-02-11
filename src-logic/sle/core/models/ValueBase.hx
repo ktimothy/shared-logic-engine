@@ -1,6 +1,7 @@
 package sle.core.models;
 
 import sle.core.actions.ActionLog;
+import sle.shim.Error;
 
 class ValueBase
 {

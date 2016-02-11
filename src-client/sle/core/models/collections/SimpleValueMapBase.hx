@@ -3,6 +3,7 @@ package sle.core.models.collections;
 import haxe.ds.StringMap;
 
 import sle.shim.ActionDump;
+import sle.shim.Error;
 
 class SimpleValueMapBase<T> extends ValueBase
 {
@@ -23,7 +24,7 @@ class SimpleValueMapBase<T> extends ValueBase
     override public function process(action:ActionDump):Void
     {
         if(action.path.length > 1)
-            throw new sle.core.Error('Got a complex action for SimpleValueMap: $action');
+            throw new Error('Got a complex action for SimpleValueMap: $action');
 
         this.set(action.path[0], action.newValue);
     }

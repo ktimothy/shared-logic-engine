@@ -2,6 +2,7 @@ package sle.core.actions.changes.base;
 
 import sle.shim.ActionDump;
 import sle.shim.ActionType;
+import sle.shim.Error;
 
 import sle.core.models.ValueBase;
 import sle.core.Utils;

@@ -2,6 +2,8 @@ package sle.core.models.collections;
 
 import sle.core.Utils;
 
+import sle.shim.Error;
+
 class ValueMapBase<T> extends ValueBase
 {
     public var _typeName:String;

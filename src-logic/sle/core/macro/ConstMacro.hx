@@ -52,7 +52,7 @@ class ConstMacro {
                 return createReadStruct(a.fields, pos, pack, name);
 
             case TAbstract(_.get() => { pack: [], name: "Map" }, [keyType, valueType]):
-                throw new Error("Do not use Map<"+keyType.toString()+", "+valueType.toString()+"> in defs, use DynamicObject<"+valueType.toString()+"> instead!", pos);
+                throw "Do not use Map<"+keyType.toString()+", "+valueType.toString()+"> in defs, use DynamicObject<"+valueType.toString()+"> instead!";
 
             case TAbstract(_.get() => { pack: ['sle', 'core', 'defs'], name: "DynamicObject" }, [valueType]):
                 var elemReadCT = createReadType(valueType, pos, pack, name).toComplexType();
@@ -63,7 +63,7 @@ class ConstMacro {
                 return t;
 
             default:
-                throw new Error('Type ${t.toString()} is not supported by Const class.', pos);
+                throw 'Type ${t.toString()} is not supported by Const class.';
         }
     }
 
