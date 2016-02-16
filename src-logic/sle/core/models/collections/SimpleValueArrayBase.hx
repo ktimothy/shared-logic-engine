@@ -1,10 +1,10 @@
 package sle.core.models.collections;
 
-import sle.shim.ActionType;
-import sle.shim.Error;
-
 import sle.core.actions.changes.impl.SimpleValueArrayChange;
 import sle.core.actions.ActionLog;
+
+import sle.shim.ActionType;
+import sle.shim.Error;
 
 class SimpleValueArrayBase<T> extends ValueArrayBase<T>
 {
@@ -54,7 +54,7 @@ class SimpleValueArrayBase<T> extends ValueArrayBase<T>
 
         this.genericUpdateHash(oldValue, value);
 
-        this.logChange(index, ActionType.INDEX, oldValue, value);
+        this.logChange(index, ActionType.ARRAY_INDEX, oldValue, value);
 
         return value;
     }
@@ -70,7 +70,7 @@ class SimpleValueArrayBase<T> extends ValueArrayBase<T>
 
         this.genericUpdateHash(oldValue, value);
 
-        this.logChange(index, ActionType.PUSH, oldValue, value);
+        this.logChange(index, ActionType.ARRAY_PUSH, oldValue, value);
 
         return result;
     }
@@ -87,7 +87,7 @@ class SimpleValueArrayBase<T> extends ValueArrayBase<T>
 
         this.genericUpdateHash(oldValue, value);
 
-        this.logChange(index, ActionType.POP, oldValue, value);
+        this.logChange(index, ActionType.ARRAY_POP, oldValue, value);
 
         return oldValue;
     }
@@ -104,7 +104,7 @@ class SimpleValueArrayBase<T> extends ValueArrayBase<T>
 
         this.genericUpdateHash(oldValue, value);
 
-        this.logChange(index, ActionType.SHIFT, oldValue, value);
+        this.logChange(index, ActionType.ARRAY_SHIFT, oldValue, value);
 
         return oldValue;
     }
@@ -121,7 +121,7 @@ class SimpleValueArrayBase<T> extends ValueArrayBase<T>
 
         this.genericUpdateHash(oldValue, value);
 
-        this.logChange(index, ActionType.UNSHIFT, oldValue, value);
+        this.logChange(index, ActionType.ARRAY_UNSHIFT, oldValue, value);
     }
 
     @:final
@@ -138,7 +138,7 @@ class SimpleValueArrayBase<T> extends ValueArrayBase<T>
 
         this.genericUpdateHash(oldValue, value);
 
-        this.logChange(index, ActionType.INSERT, oldValue, value);
+        this.logChange(index, ActionType.ARRAY_INSERT, oldValue, value);
     }
 
     @:final
@@ -155,7 +155,7 @@ class SimpleValueArrayBase<T> extends ValueArrayBase<T>
 
         this.genericUpdateHash(oldValue, value);
 
-        this.logChange(index, ActionType.REMOVE, oldValue, value);
+        this.logChange(index, ActionType.ARRAY_REMOVE, oldValue, value);
 
         return oldValue;
     }

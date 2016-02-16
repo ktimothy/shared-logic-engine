@@ -1,12 +1,10 @@
 package sle.core.models.collections.impl;
 
-typedef ConstructibleValueBase = {
-    public function new():Void;
-}
+import sle.shim.Constructible;
 
 @:final
 @:generic
-class ComplexValueArray<T:(ValueBase, ConstructibleValueBase)> extends ComplexValueArrayBase<T>
+class ComplexValueArray<T:(ValueBase, Constructible)> extends ComplexValueArrayBase<T>
 {
     public function new()
     {

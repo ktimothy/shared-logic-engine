@@ -1,10 +1,10 @@
 package sle.core.models.collections;
 
-import sle.shim.ActionType;
-import sle.shim.Error;
-
 import sle.core.actions.changes.impl.ComplexValueMapChange;
 import sle.core.actions.ActionLog;
+
+import sle.shim.ActionType;
+import sle.shim.Error;
 
 class ComplexValueMapBase<T:ValueBase> extends ValueMapBase<T>
 {
@@ -71,7 +71,7 @@ class ComplexValueMapBase<T:ValueBase> extends ValueMapBase<T>
 
         this.updateHash(this.hashOfValueBase(oldValue), this.hashOfValueBase(value));
 
-        this.logChange(key, ActionType.INDEX, oldValue, value);
+        this.logChange(key, ActionType.MAP_KEY, oldValue, value);
 
         return value;
     }
@@ -91,7 +91,7 @@ class ComplexValueMapBase<T:ValueBase> extends ValueMapBase<T>
 
         this.updateHash(this.hashOfValueBase(oldValue), this.hashOfValueBase(value));
 
-        this.logChange(key, ActionType.INSERT, oldValue, value);
+        this.logChange(key, ActionType.MAP_INSERT, oldValue, value);
     }
 
     @:final
@@ -113,7 +113,7 @@ class ComplexValueMapBase<T:ValueBase> extends ValueMapBase<T>
 
         this.updateHash(this.hashOfValueBase(oldValue), this.hashOfValueBase(value));
 
-        this.logChange(key, ActionType.REMOVE, oldValue, value);
+        this.logChange(key, ActionType.MAP_REMOVE, oldValue, value);
 
         return oldValue;
     }

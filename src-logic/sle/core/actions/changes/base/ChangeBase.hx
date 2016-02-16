@@ -7,18 +7,18 @@ import sle.shim.Error;
 import sle.core.models.ValueBase;
 import sle.core.Utils;
 
-class ChangeBase implements IAction
+class ChangeBase<TKey> implements IAction
 {
     public var type(default, null):ActionType;
 
     private var _model:ValueBase;
-    private var _propName:String;
+    private var _key:TKey;
     private var _path:Array<String>;
 
-    private function new(model:ValueBase, propName:String, actionType:ActionType)
+    private function new(model:ValueBase, key:TKey, actionType:ActionType)
     {
         _model = model;
-        _propName = propName;
+        _key = key;
         _path = this.getPath();
 
         this.type = actionType;
@@ -33,12 +33,9 @@ class ChangeBase implements IAction
         // цикл завершится как раз на корневой модели, поэтому проверка на target != null не нужна
         while(target.__parent != null)
         {
-            path.push(target.__name);
+            path.unshift(target.__name);
             target = target.__parent;
         }
-
-        path.reverse();
-        path.push(_propName);
 
         return path;
     }

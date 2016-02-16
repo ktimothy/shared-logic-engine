@@ -1,12 +1,10 @@
 package sle.core.models.collections.impl;
 
-typedef ConstructibleValueMap = {
-    public function new():Void;
-}
+import sle.shim.Constructible;
 
 @:final
 @:generic
-class ComplexValueMap<T:(ValueBase, ConstructibleValueMap)> extends ComplexValueMapBase<T>
+class ComplexValueMap<T:(ValueBase, Constructible)> extends ComplexValueMapBase<T>
 {
     public function new()
     {

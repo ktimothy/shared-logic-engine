@@ -1,18 +1,18 @@
 package sle.core.actions.changes.base;
 
+import sle.core.models.ValueBase;
+
 import sle.shim.ActionDump;
 import sle.shim.ActionType;
 
-import sle.core.models.ValueBase;
-
-class ComplexChangeBase extends ChangeBase
+class ComplexChangeBase<TKey, TValue:ValueBase> extends ChangeBase<TKey>
 {
-    private var _newValue:ValueBase;
+    private var _newValue:TValue;
     private var _expectedTypeName:String;
 
-    private function new(model:ValueBase, propName:String, actionType:ActionType, newValue:ValueBase, expectedTypeName:String)
+    private function new(model:ValueBase, key:TKey, actionType:ActionType, newValue:TValue, expectedTypeName:String)
     {
-        super(model, propName, actionType);
+        super(model, key, actionType);
 
         _newValue = newValue;
         _expectedTypeName = expectedTypeName;
@@ -23,8 +23,9 @@ class ComplexChangeBase extends ChangeBase
     {
         return {
             path: _path,
+            key: _key,
             newValue: (_newValue == null ? null : _newValue.toObject(_expectedTypeName)),
-            opName: this.type
+            type: this.type
         };
     }
 }

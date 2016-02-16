@@ -3,22 +3,19 @@ package sle.shim;
 @:enum
 abstract ActionType(String) to String
 {
-    var INDEX = 'index';
-    var INSERT = 'insert';
-    var POP = 'pop';
-    var PUSH = 'push';
-    var REMOVE = 'remove';
-    var SHIFT = 'shift';
-    var UNSHIFT = 'unshift';
-    var VAR = 'var';
     var EVENT = 'event';
 
-    public function new(value:String)
-    {
-        this = switch(value)
-        {
-            case 'index', 'insert', 'pop', 'push', 'remove', 'shift', 'unshift', 'var', 'event': value;
-            default: throw 'Invalid action type: "$value"';
-        }
-    }
+    var PROP_CHANGE = 'prop_change';
+
+    var ARRAY_PUSH = 'array_push';
+    var ARRAY_POP = 'array_pop';
+    var ARRAY_SHIFT = 'array_shift';
+    var ARRAY_UNSHIFT = 'array_unshift';
+    var ARRAY_INDEX = 'array_index';
+    var ARRAY_INSERT = 'array_insert';
+    var ARRAY_REMOVE = 'array_remove';
+
+    var MAP_KEY = 'map_key';
+    var MAP_INSERT = 'map_insert';
+    var MAP_REMOVE = 'map_remove';
 }

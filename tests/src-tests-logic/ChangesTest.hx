@@ -44,12 +44,12 @@ class ChangesTest extends TestCase
         model.inner.string = "bla-bla";
 
         var etalonChanges:Array<ActionDump> = [
-            { path: ["integer"],         newValue: 81,        opName: VAR },
-            { path: ["number"],          newValue: 0.1,       opName: VAR },
-            { path: ["string"],          newValue: "Omg!",    opName: VAR },
-            { path: ["bool"],            newValue: false,     opName: VAR },
-            { path: ["inner","integer"], newValue: 10,        opName: VAR },
-            { path: ["inner","string"],  newValue: "bla-bla", opName: VAR }
+            { path: [],        key: "integer",  newValue: 81,        type: ActionType.PROP_CHANGE },
+            { path: [],        key: "number",   newValue: 0.1,       type: ActionType.PROP_CHANGE },
+            { path: [],        key: "string",   newValue: "Omg!",    type: ActionType.PROP_CHANGE },
+            { path: [],        key: "bool",     newValue: false,     type: ActionType.PROP_CHANGE },
+            { path: ["inner"], key: "integer",  newValue: 10,        type: ActionType.PROP_CHANGE },
+            { path: ["inner"], key: "string",   newValue: "bla-bla", type: ActionType.PROP_CHANGE }
         ];
 
         assertChangesEqual(etalonChanges, ActionLog._commit());
@@ -75,21 +75,21 @@ class ChangesTest extends TestCase
 
 
         var etalonChanges:Array<ActionDump> = [
-            { path: ["bare_array","0"], newValue: 0,   opName: SHIFT   },
-            { path: ["bare_array","1"], newValue: 0,   opName: POP     },
-            { path: ["bare_array","1"], newValue: 2,   opName: PUSH    },
-            { path: ["bare_array","0"], newValue: 12,  opName: UNSHIFT },
-            { path: ["bare_array","1"], newValue: 4,   opName: INSERT  },
-            { path: ["bare_array","1"], newValue: -12, opName: INDEX   },
-            { path: ["bare_array","3"], newValue: 0,   opName: REMOVE  },
+            { path: ["bare_array"], key: 0, newValue: 0,   type: ActionType.ARRAY_SHIFT   },
+            { path: ["bare_array"], key: 1, newValue: 0,   type: ActionType.ARRAY_POP     },
+            { path: ["bare_array"], key: 1, newValue: 2,   type: ActionType.ARRAY_PUSH    },
+            { path: ["bare_array"], key: 0, newValue: 12,  type: ActionType.ARRAY_UNSHIFT },
+            { path: ["bare_array"], key: 1, newValue: 4,   type: ActionType.ARRAY_INSERT  },
+            { path: ["bare_array"], key: 1, newValue: -12, type: ActionType.ARRAY_INDEX   },
+            { path: ["bare_array"], key: 3, newValue: 0,   type: ActionType.ARRAY_REMOVE  },
 
-            { path: ["inner","object", "z", "1"], newValue: 12, opName: INDEX   },
-            { path: ["inner","object", "z", "3"], newValue: 8,  opName: PUSH    },
-            { path: ["inner","object", "z", "0"], newValue: 14, opName: UNSHIFT },
-            { path: ["inner","object", "z", "0"], newValue: 19, opName: INSERT  },
-            { path: ["inner","object", "z", "1"], newValue: 0,  opName: REMOVE  },
-            { path: ["inner","object", "z", "4"], newValue: 0,  opName: POP     },
-            { path: ["inner","object", "z", "0"], newValue: 0,  opName: SHIFT   }
+            { path: ["inner","object", "z"], key: 1, newValue: 12, type: ActionType.ARRAY_INDEX   },
+            { path: ["inner","object", "z"], key: 3, newValue: 8,  type: ActionType.ARRAY_PUSH    },
+            { path: ["inner","object", "z"], key: 0, newValue: 14, type: ActionType.ARRAY_UNSHIFT },
+            { path: ["inner","object", "z"], key: 0, newValue: 19, type: ActionType.ARRAY_INSERT  },
+            { path: ["inner","object", "z"], key: 1, newValue: 0,  type: ActionType.ARRAY_REMOVE  },
+            { path: ["inner","object", "z"], key: 4, newValue: 0,  type: ActionType.ARRAY_POP     },
+            { path: ["inner","object", "z"], key: 0, newValue: 0,  type: ActionType.ARRAY_SHIFT   }
         ];
 
         assertChangesEqual(etalonChanges, ActionLog._commit());
@@ -103,10 +103,10 @@ class ChangesTest extends TestCase
         model.bare_map.remove("b");
 
         var etalonChanges:Array<ActionDump> = [
-            { path: ["bare_map", "d"], newValue: "ololosh", opName: INSERT },
-            { path: ["bare_map", "c"], newValue: "ololosh", opName: INDEX },
-            { path: ["bare_map", "a"], newValue: null, opName: INDEX },
-            { path: ["bare_map", "b"], newValue: null, opName: REMOVE }
+            { path: ["bare_map"], key: "d", newValue: "ololosh", type: ActionType.MAP_INSERT },
+            { path: ["bare_map"], key: "c", newValue: "ololosh", type: ActionType.MAP_KEY },
+            { path: ["bare_map"], key: "a", newValue: null, type: ActionType.MAP_KEY },
+            { path: ["bare_map"], key: "b", newValue: null, type: ActionType.MAP_REMOVE }
         ];
 
         assertChangesEqual(etalonChanges, ActionLog._commit());
@@ -137,11 +137,11 @@ class ChangesTest extends TestCase
         model.inner = newInnerModel;
 
         var etalonChanges:Array<ActionDump> = [
-            { path: ["coords"], newValue: null, opName: VAR },
-            { path: ["coords"], newValue: { x: 1, y: 3 }, opName: VAR },
-            { path: ["inner","coords"], newValue: { x: 0, y: 0 }, opName: VAR },
-            { path: ["inner"], newValue: null, opName: VAR },
-            { path: ["inner"], newValue: { integer: 0, string: null, object: { x: "3", y: null, z: null }, coords: { x: -1, y: -1 }}, opName: VAR }
+            { path: [], key: "coords", newValue: null, type: ActionType.PROP_CHANGE},
+            { path: [], key: "coords", newValue: { x: 1, y: 3 }, type: ActionType.PROP_CHANGE },
+            { path: ["inner"], key: "coords", newValue: { x: 0, y: 0 }, type: ActionType.PROP_CHANGE },
+            { path: [], key: "inner", newValue: null, type: ActionType.PROP_CHANGE },
+            { path: [], key: "inner", newValue: { integer: 0, string: null, object: { x: "3", y: null, z: null }, coords: { x: -1, y: -1 }}, type: ActionType.PROP_CHANGE }
         ];
 
         assertChangesEqual(etalonChanges, ActionLog._commit());
@@ -167,14 +167,14 @@ class ChangesTest extends TestCase
         model.complex_array.remove(2);
 
         var etalonChanges:Array<ActionDump> = [
-            { path: ["complex_array","2"], newValue: { x: .3, y: .4 }, opName: INDEX   },
-            { path: ["complex_array","0"], newValue: null,             opName: SHIFT   },
-            { path: ["complex_array","1"], newValue: null,             opName: POP     },
-            { path: ["complex_array","1"], newValue: null,             opName: PUSH    },
-            { path: ["complex_array","2"], newValue: { x: 0, y: 0 },   opName: PUSH    },
-            { path: ["complex_array","0"], newValue: { x: 3, y: 8 },   opName: UNSHIFT },
-            { path: ["complex_array","1"], newValue: null,             opName: INSERT  },
-            { path: ["complex_array","2"], newValue: null,             opName: REMOVE  }
+            { path: ["complex_array"], key: 2, newValue: { x: .3, y: .4 }, type: ActionType.ARRAY_INDEX   },
+            { path: ["complex_array"], key: 0, newValue: null,             type: ActionType.ARRAY_SHIFT   },
+            { path: ["complex_array"], key: 1, newValue: null,             type: ActionType.ARRAY_POP     },
+            { path: ["complex_array"], key: 1, newValue: null,             type: ActionType.ARRAY_PUSH    },
+            { path: ["complex_array"], key: 2, newValue: { x: 0, y: 0 },   type: ActionType.ARRAY_PUSH    },
+            { path: ["complex_array"], key: 0, newValue: { x: 3, y: 8 },   type: ActionType.ARRAY_UNSHIFT },
+            { path: ["complex_array"], key: 1, newValue: null,             type: ActionType.ARRAY_INSERT  },
+            { path: ["complex_array"], key: 2, newValue: null,             type: ActionType.ARRAY_REMOVE  }
         ];
 
         assertChangesEqual(etalonChanges, ActionLog._commit());
@@ -191,10 +191,10 @@ class ChangesTest extends TestCase
         model.complex_map["tre"] = obj;
 
         var etalonChanges:Array<ActionDump> = [
-            { path: ["complex_map", "nothing"], newValue: { x: false }, opName: INDEX },
-            { path: ["complex_map", "uno"],     newValue: null,         opName: INDEX },
-            { path: ["complex_map", "due"],     newValue: null,         opName: REMOVE },
-            { path: ["complex_map", "tre"],     newValue: { x: true },  opName: INSERT }
+            { path: ["complex_map"], key: "nothing", newValue: { x: false }, type: ActionType.MAP_KEY },
+            { path: ["complex_map"], key: "uno",     newValue: null,         type: ActionType.MAP_KEY },
+            { path: ["complex_map"], key: "due",     newValue: null,         type: ActionType.MAP_REMOVE },
+            { path: ["complex_map"], key: "tre",     newValue: { x: true },  type: ActionType.MAP_INSERT }
         ];
 
         assertChangesEqual(etalonChanges, ActionLog._commit());
@@ -208,7 +208,8 @@ class ChangesTest extends TestCase
         for(i in 0...len)
         {
             assertEquals(etalonChanges[i].path.join("."), changes[i].path.join("."));
-            assertEquals(etalonChanges[i].opName, changes[i].opName);
+            assertEquals(etalonChanges[i].key, changes[i].key);
+            assertEquals(etalonChanges[i].type, changes[i].type);
             assertEquals(etalonChanges[i].newValue, changes[i].newValue);
         }
     }
@@ -221,7 +222,7 @@ class ChangesTest extends TestCase
     private function stringifyChanges(changes:Array<ActionDump>):String
     {
         var changesStrs:Array<String> = [];
-        for(change in changes) changesStrs.push("    { path: [\"" + change.path.join("\",\"") + "\"], newValue: " + Utils.hash(change.newValue) + ", opName: \"" + change.opName + "\" }");
+        for(change in changes) changesStrs.push("    { path: [\"" + change.path.join("\",\"") + "\"], key: " + change.key + ", newValue: " + Utils.hash(change.newValue) + ", type: \"" + change.type + "\" }");
         return "[\n" + changesStrs.join(",\n") + "\n]";
     }
 }

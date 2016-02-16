@@ -8,6 +8,7 @@ import sle.shim.CommandResult;
 import sle.shim.QueryResult;
 import sle.shim.ActionDump;
 import sle.shim.Error;
+import sle.shim.Constructible;
 
 import sle.core.actions.ActionLog;
 import sle.core.models.ValueBase;
@@ -15,7 +16,7 @@ import sle.core.commands.Commands;
 import sle.core.queries.Queries;
 
 @:generic
-class ContextBase<T:(ValueBase, Constructable)> implements IContext
+class ContextBase<T:(ValueBase, Constructible)> implements IContext
 {
     private var model:T;
     private var queries:Queries<T>;
@@ -93,7 +94,7 @@ class ContextBase<T:(ValueBase, Constructable)> implements IContext
 
             commands.executeExternal(name, params);
 
-            #if debug // проверяем строковый хэш
+            #if debug // checking string'ish hash
             result.hash = ActionLog.calculateActionsHash();
 
             if (hashToCheck != null && hashToCheck != result.hash)
@@ -101,7 +102,7 @@ class ContextBase<T:(ValueBase, Constructable)> implements IContext
                 throw new Error("long_hash_mismatch\nclient:\n" + hashToCheck +  "\nserver:\n" + result.hash);
             }
 
-            #else // проверяем числовой хэш
+            #else // checking number'ish hash
 
             result.hash = model.__hash;
 
@@ -165,5 +166,3 @@ class ContextBase<T:(ValueBase, Constructable)> implements IContext
         return result;
     }
 }
-
-typedef Constructable = { function new():Void; };

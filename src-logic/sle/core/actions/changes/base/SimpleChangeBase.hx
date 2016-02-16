@@ -1,17 +1,17 @@
 package sle.core.actions.changes.base;
 
+import sle.core.models.ValueBase;
+
 import sle.shim.ActionDump;
 import sle.shim.ActionType;
 
-import sle.core.models.ValueBase;
-
-class SimpleChangeBase extends ChangeBase
+class SimpleChangeBase<TKey, TValue> extends ChangeBase<TKey>
 {
     private var _newValue:Dynamic;
 
-    private function new(model:ValueBase, propName:String, actionType:ActionType, newValue:Dynamic)
+    private function new(model:ValueBase, key:TKey, actionType:ActionType, newValue:TValue)
     {
-        super(model, propName, actionType);
+        super(model, key, actionType);
 
         _newValue = newValue;
     }
@@ -21,8 +21,9 @@ class SimpleChangeBase extends ChangeBase
     {
         return {
             path: _path,
+            key: _key,
             newValue: _newValue,
-            opName: this.type
+            type: this.type
         };
     }
 }

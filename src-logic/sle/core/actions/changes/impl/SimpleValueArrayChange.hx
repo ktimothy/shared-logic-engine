@@ -1,25 +1,22 @@
 package sle.core.actions.changes.impl;
 
-import sle.shim.ActionType;
-import sle.shim.Error;
-
 import sle.core.models.collections.ValueArrayBase;
 import sle.core.models.ValueBase;
 import sle.core.actions.changes.base.SimpleChangeBase;
-import sle.core.Utils;
+
+import sle.shim.ActionType;
+import sle.shim.Error;
 
 @:final
-class SimpleValueArrayChange<T> extends SimpleChangeBase
+class SimpleValueArrayChange<T> extends SimpleChangeBase<Int, T>
 {
     private var _oldValue:T;
-    private var _index:Int;
 
-    public function new(model:ValueArrayBase<T>, index:Int, actionType:ActionType, oldValue:T, newValue:T)
+    public function new(model:ValueArrayBase<T>, key:Int, actionType:ActionType, oldValue:T, newValue:T)
     {
-        super(model, Utils.intToString(index), actionType, newValue);
+        super(model, key, actionType, newValue);
 
         _oldValue = oldValue;
-        _index = index;
     }
 
     override public function rollback():Void
@@ -28,30 +25,29 @@ class SimpleValueArrayChange<T> extends SimpleChangeBase
 
         switch(this.type)
         {
-            case ActionType.INDEX:
-                model.set(_index, _oldValue);
+            case ActionType.ARRAY_INDEX:
+                model.set(_key, _oldValue);
 
-            case ActionType.PUSH:
+            case ActionType.ARRAY_PUSH:
                 model.pop();
 
-            case ActionType.POP:
+            case ActionType.ARRAY_POP:
                 model.push(_oldValue);
 
-            case ActionType.SHIFT:
+            case ActionType.ARRAY_SHIFT:
                 model.unshift(_oldValue);
 
-            case ActionType.UNSHIFT:
+            case ActionType.ARRAY_UNSHIFT:
                 model.shift();
 
-            case ActionType.INSERT:
-                model.remove(_index);
+            case ActionType.ARRAY_INSERT:
+                model.remove(_key);
 
-            case ActionType.REMOVE:
-                model.insert(_index, _oldValue);
+            case ActionType.ARRAY_REMOVE:
+                model.insert(_key, _oldValue);
 
             default:
-                throw new Error('This action is not supported in SimpleValueArrayChange!');
+                throw new Error('This action is not supported in SimpleValueArrayChange: ${this.type}!');
         }
-
     }
 }

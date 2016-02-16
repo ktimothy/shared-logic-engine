@@ -28,9 +28,10 @@ class Event implements IAction
     public function toObject():ActionDump
     {
         return {
-            path: [_name],
+            path: null,
+            key: _name,
             newValue: _params,
-            opName: this.type
+            type: this.type
         };
     }
 

@@ -1,13 +1,13 @@
 package sle.core.actions.changes.impl;
 
-import sle.shim.ActionType;
-import sle.shim.Error;
-
 import sle.core.models.collections.ValueMapBase;
 import sle.core.actions.changes.base.SimpleChangeBase;
 
+import sle.shim.ActionType;
+import sle.shim.Error;
+
 @:final
-class SimpleValueMapChange<T> extends SimpleChangeBase
+class SimpleValueMapChange<T> extends SimpleChangeBase<String, T>
 {
     private var _oldValue:T;
 
@@ -24,17 +24,17 @@ class SimpleValueMapChange<T> extends SimpleChangeBase
 
         switch(this.type)
         {
-            case ActionType.INDEX:
-                model.set(_propName, _oldValue);
+            case ActionType.MAP_KEY:
+                model.set(_key, _oldValue);
 
-            case ActionType.INSERT:
-                model.remove(_propName);
+            case ActionType.MAP_INSERT:
+                model.remove(_key);
 
-            case ActionType.REMOVE:
-                model.set(_propName, _oldValue);
+            case ActionType.MAP_REMOVE:
+                model.set(_key, _oldValue);
 
             default:
-                throw new Error('This action is not supported in SimpleValueMapChange!');
+                throw new Error('This action is not supported in SimpleValueMapChange: ${this.type}!');
         }
     }
 }
