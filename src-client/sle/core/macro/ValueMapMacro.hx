@@ -9,6 +9,10 @@ import haxe.macro.ComplexTypeTools;
 import haxe.macro.TypeTools;
 import haxe.macro.Type;
 import haxe.macro.Expr;
+
+import sle.core.models.collections.ComplexValueMapBase;
+import sle.core.models.collections.SimpleValueMapBase;
+
 using StringTools;
 
 class ValueMapMacro

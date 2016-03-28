@@ -11,6 +11,6 @@ class Value extends ValueBase
 
     override public function process(action:ActionDump):Void
     {
-        throw new Error('This model has no field "${action.path[0]}"');
+        throw new Error('This model has no field "${action.key}"');
     }
 }

@@ -4,6 +4,8 @@ import haxe.unit.TestCase;
 
 import sle.core.models.collections.ValueArray;
 
+import sle.shim.ActionType;
+
 import models.TestDump;
 
 class SimpleValueArrayTest extends TestCase
@@ -15,9 +17,10 @@ class SimpleValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['bare_array'],
-            newValue:   []
+            path:       [],
+            key:        'bare_array',
+            newValue:   [],
+            type:       ActionType.PROP_CHANGE
         });
 
         // hack to avoid warning
@@ -26,9 +29,10 @@ class SimpleValueArrayTest extends TestCase
         try
         {
             model.process({
-                opName:     VAR,
-                path:       ['bare_array', '0'],
-                newValue:   [1] 
+                path:       ['bare_array'],
+                key:        0,
+                newValue:   [1],
+                type:       ActionType.PROP_CHANGE
             });
         }
         catch(e:Dynamic)
@@ -45,15 +49,17 @@ class SimpleValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['bare_array'],
-            newValue:   [1]
+            path:       [],
+            key:        'bare_array',
+            newValue:   [1],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     PUSH,
-            path:       ['bare_array', '0'],
-            newValue:   2 
+            path:       ['bare_array'],
+            key:        0,
+            newValue:   2,
+            type:       ActionType.ARRAY_PUSH
         });
 
         assertEquals(2, model.bare_array.length);
@@ -65,15 +71,17 @@ class SimpleValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['bare_array'],
-            newValue:   [1]
+            path:       [],
+            key:        'bare_array',
+            newValue:   [1],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     UNSHIFT,
-            path:       ['bare_array', '0'],
-            newValue:   2
+            path:       ['bare_array'],
+            key:        0,
+            newValue:   2,
+            type:       ActionType.ARRAY_UNSHIFT
         });
 
         assertEquals(2, model.bare_array.length);
@@ -85,15 +93,17 @@ class SimpleValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['bare_array'],
-            newValue:   [1, 2]
+            path:       [],
+            key:        'bare_array',
+            newValue:   [1, 2],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     POP,
-            path:       ['bare_array', '0'],
-            newValue:   0 
+            path:       ['bare_array'],
+            key:        0,
+            newValue:   0,
+            type:       ActionType.ARRAY_POP
         });
 
         assertEquals(1, model.bare_array.length);
@@ -105,15 +115,17 @@ class SimpleValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['bare_array'],
-            newValue:   [1, 2]
+            path:       [],
+            key:        'bare_array',
+            newValue:   [1, 2],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     SHIFT,
-            path:       ['bare_array', '0'],
-            newValue:   0 
+            path:       ['bare_array'],
+            key:        0,
+            newValue:   0,
+            type:       ActionType.ARRAY_SHIFT
         });
 
         assertEquals(1, model.bare_array.length);
@@ -125,15 +137,17 @@ class SimpleValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['bare_array'],
-            newValue:   [1, 2]
+            path:       [],
+            key:        'bare_array',
+            newValue:   [1, 2],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     INSERT,
-            path:       ['bare_array', '1'],
-            newValue:   7
+            path:       ['bare_array'],
+            key:        1,
+            newValue:   7,
+            type:       ActionType.ARRAY_INSERT
         });
 
         assertEquals(3, model.bare_array.length);
@@ -147,15 +161,18 @@ class SimpleValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['bare_array'],
-            newValue:   [1, 7, 2]
+            path:       [],
+            key:        'bare_array',
+            newValue:   [1, 7, 2],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     REMOVE,
-            path:       ['bare_array', '1'],
-            newValue:   null
+            path:       ['bare_array'],
+            key:        1,
+            newValue:   null,
+            type:       ActionType.ARRAY_REMOVE
+
         });
 
         assertEquals(2, model.bare_array.length);
@@ -168,15 +185,17 @@ class SimpleValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['bare_array'],
-            newValue:   [1]
+            path:       [],
+            key:        'bare_array',
+            newValue:   [1],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     INDEX,
-            path:       ['bare_array', '0'],
-            newValue:   2
+            path:       ['bare_array'],
+            key:        0,
+            newValue:   2,
+            type:       ActionType.ARRAY_INDEX
         });
 
         assertEquals(2, model.bare_array[0]);

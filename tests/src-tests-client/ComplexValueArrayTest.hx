@@ -4,6 +4,8 @@ import haxe.unit.TestCase;
 
 import sle.core.models.collections.ValueArray;
 
+import sle.shim.ActionType;
+
 import models.TestDump;
 
 class ComplexValueArrayTest extends TestCase
@@ -15,9 +17,10 @@ class ComplexValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['complex_array'],
-            newValue:   []
+            path:       [],
+            key:        'complex_array',
+            newValue:   [],
+            type:       ActionType.PROP_CHANGE
         });
 
         // hack to avoid warning
@@ -26,9 +29,10 @@ class ComplexValueArrayTest extends TestCase
         try
         {
             model.process({
-                opName:     VAR,
-                path:       ['complex_array', '0'],
-                newValue:   [{x: 0.0, y: 0.0}]
+                path:       ['complex_array'],
+                key:        0,
+                newValue:   [{ x: 0.0, y: 0.0 }],
+                type:       ActionType.PROP_CHANGE
             });
         }
         catch(e:Dynamic)
@@ -45,15 +49,18 @@ class ComplexValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['complex_array'],
-            newValue:   [{x: 0.0, y: 0.0}]
+            path:       [],
+            key:        'complex_array',
+            newValue:   [{ x: 0.0, y: 0.0 }],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     PUSH,
-            path:       ['complex_array', '0'],
-            newValue:   {x: 1.0, y: 1.0}
+
+            path:       ['complex_array'],
+            key:        0,
+            newValue:   { x: 1.0, y: 1.0 },
+            type:     ActionType.ARRAY_PUSH
         });
 
         assertEquals(2, model.complex_array.length);
@@ -67,15 +74,17 @@ class ComplexValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['complex_array'],
-            newValue:   [{x: 0.0, y: 0.0}]
+            path:       [],
+            key:        'complex_array',
+            newValue:   [{ x: 0.0, y: 0.0 }],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     UNSHIFT,
-            path:       ['complex_array', '0'],
-            newValue:   {x: 1.0, y: 1.0}
+            path:       ['complex_array'],
+            key:        0,
+            newValue:   { x: 1.0, y: 1.0 },
+            type:       ActionType.ARRAY_UNSHIFT
         });
 
         assertEquals(2, model.complex_array.length);
@@ -89,15 +98,17 @@ class ComplexValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['complex_array'],
-            newValue:   [{x: 0.0, y: 0.0}, {x: 1.0, y: 1.0}]
+            path:       [],
+            key:        'complex_array',
+            newValue:   [{ x: 0.0, y: 0.0}, { x: 1.0, y: 1.0 }],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     POP,
-            path:       ['complex_array', '0'],
-            newValue:   0
+            path:       ['complex_array'],
+            key:        0,
+            newValue:   0,
+            type:       ActionType.ARRAY_POP
         });
 
         assertEquals(1, model.complex_array.length);
@@ -111,15 +122,17 @@ class ComplexValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['complex_array'],
-            newValue:   [{x: 0.0, y: 0.0}, {x: 1.0, y: 1.0}]
+            path:       [],
+            key:        'complex_array',
+            newValue:   [{ x: 0.0, y: 0.0 }, { x: 1.0, y: 1.0 }],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     SHIFT,
-            path:       ['complex_array', '0'],
-            newValue:   0 
+            path:       ['complex_array'],
+            key:        0,
+            newValue:   0,
+            type:       ActionType.ARRAY_SHIFT
         });
 
         assertEquals(1, model.complex_array.length);
@@ -133,15 +146,17 @@ class ComplexValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['complex_array'],
-            newValue:   [{x: 0.0, y: 0.0}, {x: 1.0, y: 1.0}]
+            path:       [],
+            key:        'complex_array',
+            newValue:   [{ x: 0.0, y: 0.0 }, { x: 1.0, y: 1.0 }],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     INSERT,
-            path:       ['complex_array', '1'],
-            newValue:   {x: 7.0, y: 7.0}
+            path:       ['complex_array'],
+            key:        1,
+            newValue:   { x: 7.0, y: 7.0 },
+            type:       ActionType.ARRAY_INSERT
         });
 
         assertEquals(3, model.complex_array.length);
@@ -161,15 +176,17 @@ class ComplexValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['complex_array'],
-            newValue:   [{x: 0.0, y: 0.0}, {x: 7.0, y: 7.0}, {x: 1.0, y: 1.0}]
+            path:       [],
+            key:        'complex_array',
+            newValue:   [{ x: 0.0, y: 0.0 }, { x: 7.0, y: 7.0 }, { x: 1.0, y: 1.0 }],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     REMOVE,
-            path:       ['complex_array', '1'],
-            newValue:   null
+            path:       ['complex_array'],
+            key:        1,
+            newValue:   null,
+            type:     ActionType.ARRAY_REMOVE
         });
 
         assertEquals(2, model.complex_array.length);
@@ -186,15 +203,17 @@ class ComplexValueArrayTest extends TestCase
         var model = new TestDump();
 
         model.process({
-            opName:     VAR,
-            path:       ['complex_array'],
-            newValue:   [{x: 0.0, y: 0.0}]
+            path:       [],
+            key:        'complex_array',
+            newValue:   [{ x: 0.0, y: 0.0 }],
+            type:       ActionType.PROP_CHANGE
         });
 
         model.process({
-            opName:     INDEX,
-            path:       ['complex_array', '0'],
-            newValue:   {x: 1.0, y: 1.0}
+            path:       ['complex_array'],
+            key:        0,
+            newValue:   { x: 1.0, y: 1.0 },
+            type:       ActionType.ARRAY_INDEX,
         });
 
         assertEquals(1, model.complex_array.length);

@@ -8,6 +8,9 @@ import haxe.macro.Expr;
 import haxe.macro.Type;
 import haxe.macro.PositionTools;
 
+import sle.core.models.collections.SimpleValueArrayBase;
+import sle.core.models.collections.ComplexValueArrayBase;
+
 using StringTools;
 using haxe.macro.TypeTools;
 using haxe.macro.ComplexTypeTools;
@@ -164,7 +167,7 @@ class ValueArrayAbstractDefinitionFactoryBase
             fields: [
                 getNewField(ct),
                 getArrayReadField(ct)
-            ],
+            ]
         };
     }
 

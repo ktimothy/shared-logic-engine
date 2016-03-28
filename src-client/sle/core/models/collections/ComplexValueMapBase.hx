@@ -3,6 +3,8 @@ package sle.core.models.collections;
 import haxe.ds.StringMap;
 
 import sle.shim.ActionDump;
+import sle.shim.ActionType;
+import sle.shim.Error;
 
 class ComplexValueMapBase<T:ValueBase> extends ValueBase
 {
@@ -19,35 +21,52 @@ class ComplexValueMapBase<T:ValueBase> extends ValueBase
     }
 
     public function get(key:String):T return _data.get(key);
-    public function set(key:String, value:T):Void _data.set(key, value);
-    public function remove(key:String):Bool return _data.remove(key);
     public function exists(key:String):Bool return _data.exists(key);
 
     override public function process(action:ActionDump):Void
     {
-        if(action.path.length == 1)
+        if (action.path.length > 0)
         {
-            var inst:T = Reflect.hasField(action.newValue, '__type')
-                ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
-                : _factory();
-
-            this.set(action.path[0], inst);
-
-            for(fieldName in Reflect.fields(action.newValue))
-            {
-                if(fieldName == '__type')
-                    continue;
-
-                inst.process({
-                    opName:     VAR,
-                    path:       [fieldName],
-                    newValue:   Reflect.field(action.newValue, fieldName)
-                });
-            }
+            this.get(action.path.shift()).process(action);
         }
         else
         {
-            get(action.path.shift()).process(action);
+            switch (action.type)
+            {
+                case ActionType.MAP_KEY | ActionType.MAP_INSERT:
+
+                    if (action.newValue == null)
+                    {
+                        _data.set(cast action.key, null);
+                    }
+                    else
+                    {
+                        var inst:T = Reflect.hasField(action.newValue, '__type')
+                        ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
+                        : _factory();
+
+                        _data.set(cast action.key, inst);
+
+                        for(fieldName in Reflect.fields(action.newValue))
+                        {
+                            if(fieldName == '__type')
+                                continue;
+
+                            inst.process({
+                                path:       [],
+                                key:        fieldName,
+                                newValue:   Reflect.field(action.newValue, fieldName),
+                                type:       ActionType.PROP_CHANGE
+                            });
+                        }
+                    }
+
+                case ActionType.MAP_REMOVE:
+                    _data.remove(cast action.key);
+
+                default:
+                    throw new Error('Wrong action type "${action.type}" for ValueMap');
+            }
         }
     }
 }

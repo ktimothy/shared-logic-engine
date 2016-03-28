@@ -3,6 +3,7 @@ package ;
 import haxe.unit.TestCase;
 
 import sle.shim.ActionDump;
+import sle.shim.ActionType;
 
 import models.TestDump;
 import models.Coords;
@@ -15,9 +16,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     VAR,
-            path:       ['integer'],
-            newValue:   -1
+            path:       [],
+            key:        'integer',
+            newValue:   -1,
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action);
@@ -30,9 +32,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     VAR,
-            path:       ['unsigned_integer'],
-            newValue:   1
+            path:       [],
+            key:        'unsigned_integer',
+            newValue:   1,
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action);
@@ -45,9 +48,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     VAR,
-            path:       ['number'],
-            newValue:   -1.1
+            path:       [],
+            key:        'number',
+            newValue:   -1.1,
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action);
@@ -60,9 +64,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     VAR,
-            path:       ['string'],
-            newValue:   'test'
+            path:       [],
+            key:        'string',
+            newValue:   'test',
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action);
@@ -75,9 +80,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action:ActionDump = {
-            opName:     VAR,
-            path:       ['bool'],
-            newValue:   true
+            path:       [],
+            key:        'bool',
+            newValue:   true,
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action);
@@ -90,9 +96,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     VAR,
-            path:       ['coords'],
-            newValue:   {x: 1.0, y: 1.0}
+            path:       [],
+            key:        'coords',
+            newValue:   { x: 1.0, y: 1.0 },
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action1);
@@ -101,9 +108,10 @@ class ValueTest extends TestCase
         assertEquals(1.0, model.coords.y);
 
         var action2:ActionDump = {
-            opName:     VAR,
-            path:       ['coords', 'x'],
-            newValue:   2.0
+            path:       ['coords'],
+            key:        'x',
+            newValue:   2.0,
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action2);
@@ -116,9 +124,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     VAR,
-            path:       ['coordsInherited'],
-            newValue:   {x: 1.0, y: 1.0, z: 1.0, __type:'models.CoordsInherited'}
+            path:       [],
+            key:        'coordsInherited',
+            newValue:   { x: 1.0, y: 1.0, z: 1.0, __type:'models.CoordsInherited' },
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action1);
@@ -126,9 +135,10 @@ class ValueTest extends TestCase
         assertEquals(1.0, cast(model.coordsInherited, CoordsInherited).z);
 
         var action2:ActionDump = {
-            opName:     VAR,
-            path:       ['coordsInherited', 'z'],
-            newValue:   2.0
+            path:       ['coordsInherited'],
+            key:        'z',
+            newValue:   2.0,
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action2);
@@ -141,9 +151,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     VAR,
-            path:       ['bare_map'],
-            newValue:   {test_property: 'test_value'}
+            path:       [],
+            key:        'bare_map',
+            newValue:   { test_property: 'test_value' },
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action1);
@@ -151,9 +162,10 @@ class ValueTest extends TestCase
         assertEquals('test_value', model.bare_map['test_property']);
 
         var action2:ActionDump = {
-            opName:     VAR,
-            path:       ['bare_map', 'test_property'],
-            newValue:   'test_value_2'
+            path:       ['bare_map'],
+            key:        'test_property',
+            newValue:   'test_value_2',
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action2);
@@ -166,9 +178,10 @@ class ValueTest extends TestCase
         var model = new TestDump();
 
         var action1:ActionDump = {
-            opName:     VAR,
-            path:       ['complex_map'],
-            newValue:   {test_property: {x: true}}
+            path:       [],
+            key:        'complex_map',
+            newValue:   { test_property: { x: true } },
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action1);
@@ -176,9 +189,10 @@ class ValueTest extends TestCase
         assertEquals(true, model.complex_map['test_property'].x);
 
         var action2:ActionDump = {
-            opName:     VAR,
-            path:       ['complex_map', 'test_property'],
-            newValue:   {x: false}
+            path:       ['complex_map'],
+            key:        'test_property',
+            newValue:   { x: false },
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action2);
@@ -186,9 +200,10 @@ class ValueTest extends TestCase
         assertEquals(false, model.complex_map['test_property'].x);
 
         var action3:ActionDump = {
-            opName:     VAR,
-            path:       ['complex_map', 'test_property', 'x'],
-            newValue:   true
+            path:       ['complex_map', 'test_property'],
+            key:        'x',
+            newValue:   true,
+            type:       ActionType.PROP_CHANGE
         }
 
         model.process(action3);

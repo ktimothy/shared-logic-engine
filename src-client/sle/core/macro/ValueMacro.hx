@@ -103,15 +103,21 @@ class ValueMacro
         var megaswitch:haxe.macro.Expr = {
             pos: PositionTools.here(),
             expr: ESwitch(
-                macro action.path[0],
+                macro action.key,
                 cases,
                 macro super.process(action)
             )
         }
 
         var code = macro {
-            //trace($v{Context.getLocalClass().toString()} + ' processing action: ' + action);
-            ${megaswitch};   
+            if (action.path.length == 0)
+            {
+                ${megaswitch};
+            }
+            else
+            {
+                throw new sle.shim.Error("woo");
+            }
         }
 
         return {
@@ -165,7 +171,7 @@ class ValueMacro
 
                 if(isValueMap(instanceType.get()))
                 {
-                    macro if(action.path.length == 1)
+                    macro if(action.path.length == 0)
                     {
                         $i{prop.name} = Reflect.hasField(action.newValue, '__type')
                             ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
@@ -177,9 +183,10 @@ class ValueMacro
                                 continue;
 
                             $i{prop.name}.process({
-                                opName:     VAR,
-                                path:       [fieldName],
-                                newValue:   Reflect.field(action.newValue, fieldName)
+                                path:       [],
+                                key:        fieldName,
+                                newValue:   Reflect.field(action.newValue, fieldName),
+                                type:       sle.shim.ActionType.MAP_INSERT
                             });
                         }
                     }
@@ -191,20 +198,19 @@ class ValueMacro
                 }
                 else if(isValueArray(instanceType.get()))
                 {
-                    macro if(action.path.length == 1)
+                    macro if(action.path.length == 0)
                     {
                         $i{prop.name} = Reflect.hasField(action.newValue, '__type')
                             ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
                             : new $tPath();
 
-                        // var array:Array<Dynamic>
-
                         for(element in cast(action.newValue, Array<Dynamic>))
                         {
                             $i{prop.name}.process({
-                                opName:     PUSH,
-                                path:       ['0'],
-                                newValue:   element
+                                path:       [],
+                                key:        0,
+                                newValue:   element,
+                                type:       sle.shim.ActionType.ARRAY_PUSH,
                             });
                         }
                     }
@@ -221,7 +227,7 @@ class ValueMacro
 
                 if(isValue(instanceType.get()))
                 {
-                    macro if(action.path.length == 1)
+                    macro if(action.path.length == 0)
                     {
                         $i{prop.name} = Reflect.hasField(action.newValue, '__type')
                             ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
@@ -233,9 +239,10 @@ class ValueMacro
                                 continue;
 
                             $i{prop.name}.process({
-                                opName:     VAR,
-                                path:       [fieldName],
-                                newValue:   Reflect.field(action.newValue, fieldName)
+                                path:       [],
+                                key:        fieldName,
+                                newValue:   Reflect.field(action.newValue, fieldName),
+                                type:       sle.shim.ActionType.PROP_CHANGE
                             });
                         }
                     }

@@ -1,6 +1,7 @@
 package sle.core.models.collections;
 
 import sle.shim.ActionDump;
+import sle.shim.ActionType;
 import sle.shim.Error;
 
 class ComplexValueArrayBase<T:ValueBase> extends ValueBase
@@ -21,51 +22,49 @@ class ComplexValueArrayBase<T:ValueBase> extends ValueBase
 
     public function get_length():UInt return _data.length;
     public function get(key:Int):T return _data[key];
-    public function set(key:Int, value:T):Void _data[key] = value;
 
     override public function process(action:ActionDump):Void
     {
-        if(action.path.length == 1)
+        if (action.path.length > 0)
         {
-
-            switch (action.opName)
+            this.get(Std.parseInt(action.path.shift())).process(action);
+        }
+        else
+        {
+            switch (action.type)
             {
-                case PUSH:
+                case ActionType.ARRAY_PUSH:
                     var element = createElement(action);
                     _data.push(element);
                     updateElement(element, action);
 
-                case POP:
+                case ActionType.ARRAY_POP:
                     _data.pop();
 
-                case UNSHIFT:
+                case ActionType.ARRAY_UNSHIFT:
                     var element = createElement(action);
                     _data.unshift(element);
                     updateElement(element, action); 
 
-                case SHIFT:
+                case ActionType.ARRAY_SHIFT:
                     _data.shift();
 
-                case INSERT:
+                case ActionType.ARRAY_INSERT:
                     var element = createElement(action);
-                    _data.insert(Std.parseInt(action.path[0]), element);
+                    _data.insert(cast action.key, element);
                     updateElement(element, action);
 
-                case REMOVE:
-                    _data.splice(Std.parseInt(action.path[0]), 1);
+                case ActionType.ARRAY_REMOVE:
+                    _data.splice(cast action.key, 1);
 
-                case INDEX:
+                case ActionType.ARRAY_INDEX:
                     var element = createElement(action);
-                    _data[Std.parseInt(action.path[0])] = element;
+                    _data[cast action.key] = element;
                     updateElement(element, action);
 
                 default:
-                    throw new Error('Wrong action type "${action.opName}" for ValueArray');
+                    throw new Error('Wrong action type "${action.type}" for ValueArray');
             }
-        }
-        else
-        {
-            get(Std.parseInt(action.path.shift())).process(action);
         }
     }
 
@@ -73,7 +72,7 @@ class ComplexValueArrayBase<T:ValueBase> extends ValueBase
     {
         return Reflect.hasField(action.newValue, '__type')
             ? Type.createInstance(Type.resolveClass(action.newValue.__type), [])
-            : _factory();        
+            : _factory();
     }
 
     private function updateElement(element:T, action:ActionDump):Void
@@ -84,8 +83,9 @@ class ComplexValueArrayBase<T:ValueBase> extends ValueBase
                 continue;
 
             element.process({
-                opName:     VAR,
-                path:       [fieldName],
+                path:       [],
+                type:       ActionType.PROP_CHANGE,
+                key:        fieldName,
                 newValue:   Reflect.field(action.newValue, fieldName)
             });
         }
